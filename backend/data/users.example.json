@@ -1,0 +1,46 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "joao@example.com",
+    "username": "joao_developer",
+    "password": "senha123",
+    "businessName": "João Desenvolvimento Web",
+    "professionalTitle": [
+      "Full Stack Developer",
+      "React Specialist"
+    ],
+    "bio": "Desenvolvedor experiente com 5 anos de atuação no mercado",
+    "country": "Brasil",
+    "state": "São Paulo",
+    "projects": [
+      {
+        "id": "proj-1",
+        "name": "E-commerce Platform",
+        "description": "Plataforma de e-commerce"
+      }
+    ],
+    "initialPrice": "150",
+    "deliveryTime": "7 dias",
+    "createdAt": "2025-01-15T10:30:00.000Z",
+    "updatedAt": "2025-01-15T10:30:00.000Z"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "email": "maria@example.com",
+    "username": "maria_designer",
+    "password": "senha456",
+    "businessName": "Maria Design Studio",
+    "professionalTitle": [
+      "UI/UX Designer",
+      "Graphic Designer"
+    ],
+    "bio": "Designer criativo com foco em experiência do usuário",
+    "country": "Brasil",
+    "state": "Rio de Janeiro",
+    "projects": [],
+    "initialPrice": "200",
+    "deliveryTime": "5 dias",
+    "createdAt": "2025-01-16T14:20:00.000Z",
+    "updatedAt": "2025-01-16T14:20:00.000Z"
+  }
+]

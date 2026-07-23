@@ -1,0 +1,111 @@
+.fot-footer {
+  width: 100%;
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  padding: 18px 0;
+
+  z-index: 20;
+
+  background-color: #fff;
+}
+
+/* CONTAINER CENTRAL */
+
+.fot-footer-container {
+  width: 100%;
+  max-width: 1180px;
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* LEFT */
+
+.fot-footer-left {
+  display: flex;
+  align-items: center;
+}
+
+.fot-main-logo {
+  width: 28px;
+  height: auto;
+
+  object-fit: contain;
+}
+
+/* RIGHT */
+
+.fot-footer-right {
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  font-size: 11px;
+  font-weight: 400;
+}
+
+/* LINKS */
+
+.fot-footer a {
+  text-decoration: none;
+
+  color: #111;
+
+  transition: .2s ease;
+}
+
+.fot-footer a:hover {
+  opacity: .6;
+}
+
+/* SOCIALS */
+
+.fot-footer-socials {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+/* ICONS */
+
+.fot-social-icon {
+  width: 11px;
+  height: 11px;
+
+  object-fit: contain;
+
+  cursor: pointer;
+
+  transition: .2s ease;
+}
+
+.fot-social-icon:hover {
+  opacity: .6;
+}
+
+/* LANGUAGE */
+
+.fot-footer-language {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-left: 4px;
+}
+
+/* FINAL ICON */
+
+.fot-footer-icon {
+  font-size: 11px;
+
+  cursor: pointer;
+}

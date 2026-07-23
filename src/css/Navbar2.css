@@ -1,0 +1,472 @@
+.navbar-navbar2 {
+  width: 100%;
+  height: 57px;
+
+  position: sticky;
+  top: 0;
+
+  background: #fff;
+
+  border-bottom: 1px solid #ececec;
+
+  z-index: 1000000;
+}
+
+.navbar-navbar2-container {
+  width: 100%;
+  height: 100%;
+
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ===================================================
+   ESQUERDA
+=================================================== */
+
+.navbar-navbar2-left {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.navbar-navbar2-logo {
+  width: 80px;
+
+  user-select: none;
+}
+
+.navbar-nav-link {
+  text-decoration: none;
+
+  color: #111;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition: .2s;
+}
+
+.navbar-nav-link:hover {
+  opacity: .7;
+}
+
+.navbar-nav-link-active {
+  font-weight: 700;
+}
+
+.navbar-nav-divider {
+  width: 1px;
+  height: 20px;
+
+  background: #dddddd;
+}
+
+/* ===================================================
+   CENTRO
+=================================================== */
+
+.navbar-navbar2-center {
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-navbar2-search {
+  width: 520px;
+  height: 42px;
+
+  border: 1px solid #dddddd;
+  border-radius: 999px;
+
+  padding: 0 18px;
+
+  background: #f8f8f8;
+
+  outline: none;
+
+  transition: .25s;
+}
+
+.navbar-navbar2-search:focus {
+  border-color: #ff6b6b;
+
+  background: white;
+
+  box-shadow: 0 0 0 4px rgba(255,107,107,.08);
+}
+
+/* ===================================================
+   DIREITA
+=================================================== */
+
+.navbar-navbar2-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.navbar-icon {
+  width: 22px;
+  height: 22px;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+.navbar-icon:hover {
+  transform: scale(1.08);
+
+  opacity: .75;
+}
+
+/* ===================================================
+   DROPDOWN RECURSOS
+=================================================== */
+
+.navbar-dropdown {
+  position: relative;
+}
+
+.navbar-dropdown-button {
+  border: none;
+
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  cursor: pointer;
+
+  color: #111;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.navbar-dropdown-arrow {
+  font-size: 10px;
+
+  transition: .25s;
+}
+
+.navbar-dropdown:hover .navbar-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.navbar-dropdown-menu {
+  position: absolute;
+
+  top: 42px;
+  left: 0;
+
+  width: 240px;
+
+  padding: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  background: #fff;
+
+  border: 1px solid #ececec;
+  border-radius: 14px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(10px) scale(.98);
+
+  transition: .25s;
+
+  z-index: 999;
+}
+
+.navbar-dropdown-menu::before {
+  content: "";
+
+  position: absolute;
+
+  top: -8px;
+  left: 22px;
+
+  width: 16px;
+  height: 16px;
+
+  background: white;
+
+  transform: rotate(45deg);
+
+  border-left: 1px solid #ececec;
+  border-top: 1px solid #ececec;
+}
+
+.navbar-dropdown:hover .navbar-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translateY(0) scale(1);
+}
+
+.navbar-dropdown-menu a {
+  text-decoration: none;
+
+  color: #111;
+
+  font-size: 14px;
+
+  transition: .2s;
+}
+
+.navbar-dropdown-menu a:hover {
+  color: #ff6b6b;
+
+  padding-left: 5px;
+}
+
+/* ===================================================
+   PERFIL
+=================================================== */
+
+.navbar-profile {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  height: 100%;
+}
+
+.navbar-profile-avatar {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  cursor: pointer;
+
+  border: 2px solid transparent;
+
+  transition: .25s;
+}
+
+.navbar-profile:hover .navbar-profile-avatar {
+  border-color: #ffb8b8;
+
+  transform: scale(1.05);
+}
+
+.navbar-profile-menu {
+  position: absolute;
+
+  top: calc(100% + 12px);
+  right: 0;
+
+  width: 330px;
+
+  background: white;
+
+  border: 1px solid #ececec;
+  border-radius: 18px;
+
+  padding: 20px;
+
+  box-shadow: 0 16px 45px rgba(0,0,0,.12);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(10px);
+
+  transition: .25s ease;
+
+  pointer-events: none;
+
+  z-index: 9999;
+}
+
+.navbar-profile-menu::before {
+  content: "";
+
+  position: absolute;
+
+  top: -8px;
+  right: 20px;
+
+  width: 16px;
+  height: 16px;
+
+  background: white;
+
+  transform: rotate(45deg);
+
+  border-left: 1px solid #ececec;
+  border-top: 1px solid #ececec;
+}
+
+/* mantém aberto ao mover o mouse para o menu */
+
+.navbar-profile:hover .navbar-profile-menu,
+.navbar-profile-menu:hover {
+  opacity: 1;
+
+  visibility: visible;
+
+  transform: translateY(0);
+
+  pointer-events: auto;
+}
+
+/* ===================================================
+   HEADER
+=================================================== */
+
+.navbar-profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.navbar-profile-avatar-large {
+  width: 92px;
+  height: 92px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  margin-bottom: 14px;
+
+  border: 4px solid #f4f4f4;
+}
+
+.navbar-profile-header h3 {
+  font-size: 23px;
+
+  font-weight: 700;
+
+  color: #222;
+
+  margin-bottom: 5px;
+}
+
+.navbar-profile-header p {
+  color: #777;
+
+  font-size: 14px;
+}
+
+/* ===================================================
+   BOTÃO PERFIL
+=================================================== */
+
+.navbar-profile-upgrade {
+  width: 100%;
+  height: 48px;
+
+  margin: 18px 0;
+
+  border: none;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    90deg,
+    #ff6b6b,
+    #ffa8a8
+  );
+
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+.navbar-profile-upgrade:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 24px rgba(255,107,107,.28);
+}
+
+/* ===================================================
+   DIVISOR
+=================================================== */
+
+.navbar-profile-divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 15px 0;
+
+  background: #ececec;
+}
+
+/* ===================================================
+   LINKS
+=================================================== */
+
+.navbar-profile-menu a {
+  display: block;
+
+  padding: 10px 0;
+
+  text-decoration: none;
+
+  color: #111;
+
+  font-size: 15px;
+
+  transition: .2s;
+}
+
+.navbar-profile-menu a:hover {
+  color: #ff6b6b;
+
+  padding-left: 6px;
+}
+
+/* ===================================================
+   LOGOUT
+=================================================== */
+
+.navbar-profile-logout {
+  width: 100%;
+
+  padding: 10px 0;
+
+  border: none;
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  color: #111;
+
+  font-size: 15px;
+
+  transition: .2s;
+}
+
+.navbar-profile-logout:hover {
+  color: #ff6b6b;
+
+  padding-left: 6px;
+}

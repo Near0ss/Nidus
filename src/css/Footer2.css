@@ -1,0 +1,110 @@
+.footer2 {
+  width: 100%;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+
+  background: #fff;
+
+  border-top: 1px solid #e8e8e8;
+
+  font-size: 12px;
+
+  color: #666;
+}
+
+/* LINKS */
+
+.footer2-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.footer2-left a {
+  text-decoration: none;
+  color: #666;
+}
+
+.footer2-left a:hover {
+  color: #111;
+}
+
+/* IDIOMA */
+
+.footer2-right {
+  position: relative;
+}
+
+.language-dropdown {
+  position: relative;
+}
+
+.language-selected {
+  cursor: pointer;
+  color: #666;
+}
+
+.language-selected:hover {
+  color: #111;
+}
+
+/* MENU */
+
+.language-menu {
+  position: absolute;
+
+  bottom: 28px;
+  right: 0;
+
+  width: 180px;
+  max-height: 260px;
+
+  overflow-y: auto;
+
+  background: white;
+
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.08);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(10px);
+
+  transition: .2s ease;
+
+  z-index: 999;
+}
+
+.language-dropdown:hover .language-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.language-menu a {
+  text-decoration: none;
+  color: #333;
+
+  padding: 6px 8px;
+
+  border-radius: 8px;
+}
+
+.language-menu a:hover {
+  background: #f3f3f3;
+}
