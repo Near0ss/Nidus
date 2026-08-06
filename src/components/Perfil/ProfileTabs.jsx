@@ -1,11 +1,15 @@
-export default function ProfileTabs({ tab, setTab }) {
+export default function ProfileTabs({ tab, setTab, user }) {
   const tabs = [
     { id: 'dashboard', label: 'Geral' },
-    { id: 'services', label: 'Serviços' },
-    { id: 'finance', label: 'Finanças' },
-    { id: 'messages', label: 'Mensagens' },
+    ...(user?.type === 'freelancer'
+      ? [
+          { id: 'services', label: 'Serviços' },
+          { id: 'finance', label: 'Finanças' },
+          { id: 'messages', label: 'Mensagens' },
+          { id: 'statistics', label: 'Estatísticas' },
+        ]
+      : []),
     { id: 'social', label: 'Social' },
-    { id: 'statistics', label: 'Estatísticas' },
     { id: 'settings', label: 'Configurações' },
   ];
 

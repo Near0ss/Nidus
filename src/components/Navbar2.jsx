@@ -14,11 +14,16 @@ export default function Navbar2() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const stored = localStorage.getItem("nidus_user");
-
-    if (stored) {
-      setUser(JSON.parse(stored));
+    function loadUser() {
+      const stored = localStorage.getItem("nidus_user");
+      if (stored) {
+        setUser(JSON.parse(stored));
+      }
     }
+
+    loadUser();
+    window.addEventListener("nidus-user-updated", loadUser);
+    return () => window.removeEventListener("nidus-user-updated", loadUser);
   }, []);
 
   function handleLogout() {

@@ -7,7 +7,7 @@ const socials = [
   { name: "Facebook", icon: Link2, profile: "Nidus", followers: "6,3k" },
 ];
 
-export default function Social({ user }) {
+export default function Social() {
   return (
     <section className="perfil-section perfil-social">
       <div className="section-heading">

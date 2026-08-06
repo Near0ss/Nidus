@@ -1,18 +1,15 @@
 import {
-  Globe,
   Star,
   FolderOpen,
   CircleCheck,
   Pencil,
-  Briefcase,
   Wallet,
-  MessageCircle,
-  BarChart3
 } from "lucide-react";
 
 export default function SidebarProfile({
   user,
   setTab,
+  openEditModal,
 }) {
   return (
     <aside className="perfil-sidebar">
@@ -21,12 +18,11 @@ export default function SidebarProfile({
 
         <button
           className="perfil-main-button"
-          onClick={() => setTab("settings")}
+          onClick={openEditModal}
         >
           <Pencil size={18} />
           Editar perfil
         </button>
-git
         <button
           className="perfil-secondary-button"
           onClick={() => setTab("social")}
@@ -36,39 +32,61 @@ git
 
       </div>
 
-      <div className="perfil-card">
+      {user?.type === "freelancer" ? (
+        <>
+          <div className="perfil-card">
 
-        <h4>Disponibilidade</h4>
+            <h4>Disponibilidade</h4>
 
-        <p>
-          Ative sua disponibilidade para
-          aparecer nas buscas e receber
-          novos clientes.
-        </p>
+            <p>
+              Ative sua disponibilidade para
+              aparecer nas buscas e receber
+              novos clientes.
+            </p>
 
-        <button className="perfil-outline-button">
-          Ativar disponibilidade
-        </button>
+            <button className="perfil-outline-button">
+              Ativar disponibilidade
+            </button>
 
-      </div>
+          </div>
 
-      <div className="perfil-card">
+          <div className="perfil-card">
 
-        <h4>Experiência</h4>
+            <h4>Experiência</h4>
 
-        <p>
-          Adicione experiências e projetos
-          para fortalecer seu perfil.
-        </p>
+            <p>
+              Adicione experiências e projetos
+              para fortalecer seu perfil.
+            </p>
 
-        <button
-          className="perfil-link-button"
-          onClick={() => setTab("services")}
-        >
-          Adicionar experiência
-        </button>
+            <button
+              className="perfil-link-button"
+              onClick={() => setTab("services")}
+            >
+              Adicionar experiência
+            </button>
 
-      </div>
+          </div>
+        </>
+      ) : (
+        <div className="perfil-card">
+
+          <h4>Explore profissionais</h4>
+
+          <p>
+            Encontre os melhores freelancers
+            para o seu próximo projeto.
+          </p>
+
+          <button
+            className="perfil-link-button"
+            onClick={() => setTab("dashboard")}
+          >
+            Ver recomendações
+          </button>
+
+        </div>
+      )}
 
       <div className="perfil-card">
 

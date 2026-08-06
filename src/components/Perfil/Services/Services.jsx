@@ -1,4 +1,4 @@
-import { ArrowUpRight, Briefcase, Layers, PlusSquare, Eye, Star } from "lucide-react";
+import { ArrowUpRight, Briefcase, PlusSquare, Eye, Star } from "lucide-react";
 
 export default function Services({ user }) {
   const projects = user?.projects || [];

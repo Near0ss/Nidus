@@ -1,4 +1,4 @@
-import { DollarSign, BarChart3, CreditCard, TrendingDown, ArrowUpRight, Wallet } from "lucide-react";
+import { DollarSign, CreditCard, TrendingDown, ArrowUpRight, Wallet } from "lucide-react";
 
 export default function Finance({ user }) {
   const totalEarned = user?.earnings || "3.450,00";

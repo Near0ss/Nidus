@@ -1,16 +1,11 @@
 import {
   User,
   Building2,
-  BriefcaseBusiness,
-  Mail,
   Globe,
   MapPin,
-  DollarSign,
-  Clock3,
   BadgeCheck,
+  Mail,
 } from "lucide-react";
-
-
 
 function FinalStep({ data, prevStep, onSubmit, isLoading, error, success }) {
     

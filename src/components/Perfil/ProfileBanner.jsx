@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   Camera,
-  Upload,
-  ImagePlus,
   MapPin,
   X,
+  ImagePlus,
 } from "lucide-react";
+import { apiFetch } from "../../lib/api";
 
 export default function ProfileBanner({
   user,
@@ -48,16 +48,13 @@ export default function ProfileBanner({
             ? { profilePhoto: data }
             : { banner: data };
 
-        await fetch(
-          `http://localhost:5000/api/users/${user.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
+        await apiFetch(`/api/users/${user.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
 
         if (uploadMode === "photo") {
           setProfilePhoto(data);
@@ -81,7 +78,7 @@ export default function ProfileBanner({
   }
 
   const initials =
-    user?.username?.charAt(0).toUpperCase() || "N";
+    (user?.username || user?.name)?.charAt(0).toUpperCase() || "N";
 
   return (
     <section className="profile-banner">
@@ -134,17 +131,15 @@ export default function ProfileBanner({
         <div className="profile-user">
 
           <h1>
-            {user?.businessName ||
-              user?.username}
+            {user?.type === "normal"
+              ? user?.name
+              : user?.businessName || user?.username}
           </h1>
 
           <span className="profile-profession">
-
-            {user?.professionalTitle?.join(
-              " • "
-            ) ||
-              "Profissional Criativo"}
-
+            {user?.type === "normal"
+              ? "Contratante Nidus"
+              : user?.professionalTitle?.join(" • ") || "Profissional Criativo"}
           </span>
 
           <div className="profile-location">

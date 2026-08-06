@@ -14,8 +14,10 @@ import Messages from "../components/Perfil/Messages/Messages";
 import Social from "../components/Perfil/Social/Social";
 import Statistics from "../components/Perfil/Statistics/Statistics";
 import Settings from "../components/Perfil/Settings/Settings";
+import EditProfileModal from "../components/Perfil/EditProfileModal";
 
 import "../css/Perfil.css";
+import { apiFetch } from "../lib/api";
 
 export default function Perfil() {
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ export default function Perfil() {
   const [tab, setTab] = useState("dashboard");
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("nidus_user");
@@ -34,17 +37,16 @@ export default function Perfil() {
 
     const savedUser = JSON.parse(stored);
 
-    fetch(`http://localhost:5000/api/users/${savedUser.id}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+    apiFetch(`/api/users/${savedUser.id}`)
       .then((data) => {
         const current = data.user || savedUser;
 
         setUser(current);
+        localStorage.setItem("nidus_user", JSON.stringify(current));
 
-        localStorage.setItem(
-          "nidus_user",
-          JSON.stringify(current)
-        );
+        if (current.type === "normal") {
+          setTab("dashboard");
+        }
       })
       .catch(() => {
         setUser(savedUser);
@@ -59,13 +61,8 @@ export default function Perfil() {
         ...values,
       };
 
-      localStorage.setItem(
-        "nidus_user",
-        JSON.stringify(updated)
-      );
-
+      localStorage.setItem("nidus_user", JSON.stringify(updated));
       window.dispatchEvent(new Event("nidus-user-updated"));
-
       return updated;
     });
   }
@@ -98,6 +95,7 @@ export default function Perfil() {
         <ProfileTabs
           tab={tab}
           setTab={setTab}
+          user={user}
         />
 
         <section className="perfil-main">
@@ -105,6 +103,7 @@ export default function Perfil() {
           <SidebarProfile
             user={user}
             setTab={setTab}
+            openEditModal={() => setShowEditModal(true)}
           />
 
           <div className="perfil-content">
@@ -112,22 +111,29 @@ export default function Perfil() {
             {tab === "dashboard" && (
               <Dashboard
                 user={user}
+                onEditProfile={() => setShowEditModal(true)}
+                onNewProject={() =>
+                  user?.type === "freelancer"
+                    ? setTab("services")
+                    : setShowEditModal(true)
+                }
               />
             )}
 
-            {tab === "services" && (
+            {tab === "services" && user?.type === "freelancer" && (
               <Services
                 user={user}
+                updateUser={updateUser}
               />
             )}
 
-            {tab === "finance" && (
+            {tab === "finance" && user?.type === "freelancer" && (
               <Finance
                 user={user}
               />
             )}
 
-            {tab === "messages" && (
+            {tab === "messages" && user?.type === "freelancer" && (
               <Messages
                 user={user}
               />
@@ -139,7 +145,7 @@ export default function Perfil() {
               />
             )}
 
-            {tab === "statistics" && (
+            {tab === "statistics" && user?.type === "freelancer" && (
               <Statistics
                 user={user}
               />
@@ -155,6 +161,17 @@ export default function Perfil() {
           </div>
 
         </section>
+
+        {showEditModal && (
+          <EditProfileModal
+            user={user}
+            onClose={() => setShowEditModal(false)}
+            updateUser={(updated) => {
+              setUser(updated);
+              localStorage.setItem("nidus_user", JSON.stringify(updated));
+            }}
+          />
+        )}
 
       </main>
     </>

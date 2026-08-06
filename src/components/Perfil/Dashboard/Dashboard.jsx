@@ -9,7 +9,7 @@ import {
   Plus,
 } from "lucide-react";
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, onEditProfile, onNewProject }) {
   return (
     <section className="perfil-dashboard">
       <div className="dashboard-header">
@@ -25,12 +25,14 @@ export default function Dashboard({ user }) {
         </div>
 
         <div className="dashboard-actions">
-          <button className="dashboard-primary">
+          <button className="dashboard-primary" onClick={onNewProject} type="button">
             <Plus size={18} />
             Novo Projeto
           </button>
 
-          <button className="dashboard-secondary">Editar Perfil</button>
+          <button className="dashboard-secondary" onClick={onEditProfile} type="button">
+            Editar Perfil
+          </button>
         </div>
       </div>
 

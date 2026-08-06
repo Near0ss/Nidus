@@ -34,8 +34,8 @@ function AuthChoice() {
               <div className="auth-features">
                 <p>Descubra portfólios</p>
                 <p>Contrate</p>
-                <p>Favorite</p>
-                <p>Explore</p>
+                <p>Salve profissionais</p>
+                <p>Conecte-se</p>
               </div>
 
             </div>

@@ -18,6 +18,7 @@ import ProjectStep from "../components/RegisterSteps/3ProjectStep";
 import FinalStep from "../components/RegisterSteps/4FinalStep";
 
 import professionalSuggestions from "../data/professionalTitles";
+import { apiFetch } from "../lib/api";
 
 function Register() {
   const totalSteps = 4;
@@ -58,19 +59,13 @@ function Register() {
     setSuccess(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/register', {
+      const data = await apiFetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao registrar usuário');
-      }
 
       setSuccess('Conta criada com sucesso!');
       // store minimal user and navigate to perfil

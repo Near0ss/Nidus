@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "../css/Login.css";
 import logoText from "../assets/logotext.png";
 import Background from "../assets/Login.png";
+import { apiFetch } from "../lib/api";
 
-function Login({ onClose, sideImage }) {
+function Login({ onClose }) {
   const [closing, setClosing] = useState(false);
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -61,14 +62,11 @@ function Login({ onClose, sideImage }) {
               setError(null);
 
               try {
-                const res = await fetch('http://localhost:5000/api/login', {
+                const data = await apiFetch('/api/login', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ email: emailOrUsername, username: emailOrUsername, password })
                 });
-
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message || 'Erro ao logar');
 
                 // save user in localStorage
                 localStorage.setItem('nidus_user', JSON.stringify(data.user));

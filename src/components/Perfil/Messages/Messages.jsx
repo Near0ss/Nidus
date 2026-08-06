@@ -1,4 +1,4 @@
-import { MessageSquare, User, CheckCircle2, BellRing } from "lucide-react";
+import { User, BellRing } from "lucide-react";
 
 const conversations = [
   { name: "cliente@empresa.com", preview: "Olá, podemos ajustar o prazo para o layout?", time: "2h atrás", unread: 3, status: "Nova" },

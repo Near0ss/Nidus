@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Upload, Trash2, DollarSign, Clock3, ChevronDown } from "lucide-react";
+import { Upload, DollarSign, Clock3, ChevronDown } from "lucide-react";
 
 function ProjectStep({ data, updateField, nextStep, prevStep }) {
   const inputRef = useRef(null);
@@ -23,8 +23,6 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
   }, []);
 
   const images = data.projects || [];
-
-  const description = data.projectDescription || "";
 
   const initialPrice = data.initialPrice || "";
 
@@ -63,13 +61,6 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
     setDragging(false);
 
     addFiles(e.dataTransfer.files);
-  }
-
-  function removeImage(index) {
-    updateField(
-      "projects",
-      images.filter((_, i) => i !== index),
-    );
   }
 
   const imagesValid = images.length >= 2;
