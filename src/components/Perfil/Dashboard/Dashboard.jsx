@@ -1,188 +1,105 @@
-import {
-  Wallet,
-  Briefcase,
-  Star,
-  TrendingUp,
-  ArrowUpRight,
-  Clock3,
-  Bell,
-  Plus,
-} from "lucide-react";
+import { Plus } from "lucide-react";
+import logo from "../../../assets/logo.png";
+
+function formatMoney(value) {
+  const amount = Number(value || 0);
+  return amount.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function profileCompleteness(user) {
+  const checks = [
+    Boolean(user?.bio),
+    Boolean(user?.profilePhoto),
+    Boolean(user?.country),
+    Boolean(user?.website),
+    (user?.professionalTitle || []).length > 0,
+    (user?.projects || []).length > 0,
+    Object.values(user?.socialLinks || {}).some(Boolean),
+  ];
+  const done = checks.filter(Boolean).length;
+  return Math.round((done / checks.length) * 100);
+}
 
 export default function Dashboard({ user, onEditProfile, onNewProject }) {
+  const isFreelancer = user?.type !== "normal";
+  const hasSocial = Object.values(user?.socialLinks || {}).some(Boolean);
+  const completeness = isFreelancer
+    ? profileCompleteness(user)
+    : Math.round(
+        ([
+          Boolean(user?.name),
+          Boolean(user?.email),
+          Boolean(user?.country),
+          Boolean(user?.state),
+          Boolean(user?.profilePhoto),
+          Boolean(user?.bio),
+          Boolean(user?.company || user?.website),
+          hasSocial,
+        ].filter(Boolean).length /
+          8) *
+          100,
+      );
+  const projectCount = user?.projects?.length || 0;
+  const rating = user?.statistics?.reviews ? user.statistics.reviews : null;
+  const balance = user?.finance?.balance ?? user?.balance ?? 0;
+  const earnings = user?.finance?.earnings ?? user?.earnings ?? 0;
+  const savedCount = Array.isArray(user?.savedIds) ? user.savedIds.length : 0;
+
+  const pills = isFreelancer
+    ? [
+        { label: "Saldo", value: `R$ ${formatMoney(balance)}` },
+        { label: "Ganhos", value: `R$ ${formatMoney(earnings)}` },
+        { label: "Projetos", value: String(projectCount) },
+        { label: "Avaliação", value: rating ?? "—" },
+      ]
+    : [
+        { label: "Conta", value: "Contratante" },
+        { label: "Salvos", value: String(savedCount) },
+        { label: "Perfil", value: `${completeness}%` },
+      ];
+
   return (
     <section className="perfil-dashboard">
-      <div className="dashboard-header">
+      <div className="section-header">
         <div>
-          <span className="dashboard-small">Bem-vindo de volta</span>
-
-          <h1>Olá, {user?.businessName || user?.username}</h1>
-
+          <h2>Visão geral</h2>
           <p>
-            Gerencie seu perfil profissional, acompanhe seu desempenho e veja as
-            novidades da sua conta.
+            {isFreelancer
+              ? "Acompanhe trabalhos, ganhos e o que o mundo vê do seu perfil."
+              : "Explore profissionais, salve ninhos e complete sua conta."}
           </p>
         </div>
+        <button className="home-btn" onClick={onNewProject} type="button">
+          <Plus size={16} />
+          {isFreelancer ? "Novo serviço" : "Explorar freelancers"}
+        </button>
+      </div>
 
-        <div className="dashboard-actions">
-          <button className="dashboard-primary" onClick={onNewProject} type="button">
-            <Plus size={18} />
-            Novo Projeto
-          </button>
+      <ul className={`home-pills${isFreelancer ? " is-four" : ""}`}>
+        {pills.map((item) => (
+          <li key={item.label}>
+            <strong>{item.value}</strong>
+            <span>{item.label}</span>
+          </li>
+        ))}
+      </ul>
 
-          <button className="dashboard-secondary" onClick={onEditProfile} type="button">
-            Editar Perfil
-          </button>
+      <section className="home-empty">
+        <img src={logo} alt="" className="home-empty__orb" />
+        <h2>Ainda sem atividade</h2>
+        <p>
+          {isFreelancer
+            ? "Quando chegar um pedido ou comentário, ele aparece aqui."
+            : "Quando você salvar ou contratar alguém, a atividade entra aqui."}
+        </p>
+        <div className="home-hero__actions">
+          {!isFreelancer && (
+            <button type="button" className="home-btn ghost" onClick={onEditProfile}>
+              Completar perfil
+            </button>
+          )}
         </div>
-      </div>
-
-      <div className="dashboard-cards">
-        <article className="dashboard-card">
-          <div className="dashboard-card-top">
-            <Wallet size={22} />
-
-            <span>Saldo disponível</span>
-          </div>
-
-          <strong>R$ {user?.balance || "0,00"}</strong>
-
-          <small>+12% em relação ao mês anterior</small>
-        </article>
-
-        <article className="dashboard-card">
-          <div className="dashboard-card-top">
-            <TrendingUp size={22} />
-
-            <span>Ganhos Totais</span>
-          </div>
-
-          <strong>R$ {user?.earnings || "0,00"}</strong>
-
-          <small>Receita acumulada</small>
-        </article>
-
-        <article className="dashboard-card">
-          <div className="dashboard-card-top">
-            <Briefcase size={22} />
-
-            <span>Projetos</span>
-          </div>
-
-          <strong>{user?.projects?.length || 0}</strong>
-
-          <small>Projetos ativos</small>
-        </article>
-
-        <article className="dashboard-card">
-          <div className="dashboard-card-top">
-            <Star size={22} />
-
-            <span>Avaliação</span>
-          </div>
-
-          <strong>{user?.rating || "4.9"}</strong>
-
-          <small>Excelente reputação</small>
-        </article>
-      </div>
-
-      <div className="dashboard-content">
-        <section className="dashboard-panel">
-          <div className="panel-header">
-            <h3>Atividade recente</h3>
-
-            <button>Ver tudo</button>
-          </div>
-
-          <div className="activity-list">
-            <div className="activity-item">
-              <div className="activity-icon">
-                <ArrowUpRight size={18} />
-              </div>
-
-              <div>
-                <strong>Novo orçamento recebido</strong>
-
-                <span>Um cliente enviou uma solicitação de projeto.</span>
-              </div>
-
-              <small>Hoje</small>
-            </div>
-
-            <div className="activity-item">
-              <div className="activity-icon">
-                <Clock3 size={18} />
-              </div>
-
-              <div>
-                <strong>Projeto atualizado</strong>
-
-                <span>Seu portfólio foi sincronizado.</span>
-              </div>
-
-              <small>Ontem</small>
-            </div>
-
-            <div className="activity-item">
-              <div className="activity-icon">
-                <Bell size={18} />
-              </div>
-
-              <div>
-                <strong>Novo comentário</strong>
-
-                <span>Um cliente avaliou seu último serviço.</span>
-              </div>
-
-              <small>2 dias</small>
-            </div>
-          </div>
-        </section>
-
-        <section className="dashboard-panel dashboard-right">
-          <h3>Desempenho</h3>
-
-          <div className="dashboard-progress">
-            <div>
-              <span>Perfil completo</span>
-
-              <strong>92%</strong>
-            </div>
-
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: "92%" }} />
-            </div>
-          </div>
-
-          <div className="dashboard-progress">
-            <div>
-              <span>Portfólio</span>
-
-              <strong>80%</strong>
-            </div>
-
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: "80%" }} />
-            </div>
-          </div>
-
-          <div className="dashboard-progress">
-            <div>
-              <span>Serviços</span>
-
-              <strong>70%</strong>
-            </div>
-
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: "70%" }} />
-            </div>
-          </div>
-
-          <div className="dashboard-tip">
-            💡 Perfis completos aparecem primeiro nas buscas do Nidus.
-          </div>
-        </section>
-      </div>
+      </section>
     </section>
   );
 }

@@ -54,17 +54,34 @@
 }
 
 .register-logo-area {
-  height: 72px;
-
+  min-height: 72px;
   display: flex;
   align-items: center;
-
+  gap: 1rem;
   flex-shrink: 0;
 }
 
-.register-logo {
-  width: 42px;
+.register-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 0;
+  background: transparent;
+  padding: 0.35rem 0.1rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-ink, #171313);
+  cursor: pointer;
+}
 
+.register-back:hover {
+  color: var(--color-accent-deep, #d94a4a);
+}
+
+.register-logo {
+  width: 96px;
+  height: auto;
+  object-fit: contain;
   user-select: none;
 }
 
@@ -346,8 +363,6 @@
   font-size: 28px;
 
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
-
-  animation: iconGlow 3s infinite;
 }
 
 @keyframes iconGlow {
@@ -363,6 +378,18 @@
       0 10px 26px rgba(0, 0, 0, 0.08),
       0 0 42px rgba(255, 107, 107, 0.35);
   }
+}
+
+.step-brand {
+  display: grid;
+  justify-items: center;
+  margin: 0 auto 1.15rem;
+}
+
+.step-brand__wordmark {
+  width: 118px;
+  height: auto;
+  object-fit: contain;
 }
 
 .step-card h1 {
@@ -441,6 +468,101 @@
 
 .valid-input {
   border-color: #a8fcff !important;
+}
+
+.username-mask {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #f2f3f5;
+  padding: 0 10px 0 16px;
+  transition:
+    border-color 0.28s ease,
+    background 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.28s ease;
+}
+
+.username-mask__at {
+  flex-shrink: 0;
+  color: #ff6b6b;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.username-mask input {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 8px 16px 4px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.username-mask:focus-within {
+  background: #fff;
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.08);
+}
+
+.username-mask.valid-input {
+  border-color: #a8fcff !important;
+}
+
+.field-error,
+.field-hint,
+.field-success {
+  display: block;
+  margin-top: -6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field-error {
+  color: #d94a4a;
+}
+
+.field-hint {
+  color: #8a7f7f;
+}
+
+.field-success {
+  color: #1f9d6a;
+}
+
+.field-error--box,
+.field-success--box {
+  margin: 0 0 12px;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+.field-error--box {
+  background: #fee2e2;
+}
+
+.field-success--box {
+  background: #d1fae5;
+}
+
+button.summary-item,
+button.summary-tags {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.summary-item:hover,
+button.summary-tags:hover {
+  color: #171313;
 }
 
 .step-fields textarea {
@@ -751,29 +873,21 @@
 .selected-title {
   display: flex;
   align-items: center;
-
   gap: 8px;
-
   padding: 9px 15px;
-
-  border: none;
+  border: 1px solid #ffb8b8;
   border-radius: 999px;
-
-  background: #ff6b6b;
-
-  color: white;
-
-  font-size: 14px;
-  font-weight: 500;
-
+  background: #fff1ef;
+  color: #d94a4a;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-
-  transition: 0.25s;
 }
 
 .selected-title:hover {
-  background: #ff5252;
-  transform: translateY(-2px);
+  background: #171313;
+  border-color: #171313;
+  color: #fff;
 }
 
 .selected-title span {
@@ -784,280 +898,133 @@
    PROFESSION GRID
 =========================================== */
 
+.register-preview-card:has(.profession-mode) h2 {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.register-preview-card:has(.profession-mode) p {
+  margin-bottom: 12px;
+}
+
+.register-image-container.profession-mode {
+  display: flex;
+  overflow: hidden;
+}
+
 .profession-grid {
-  height: 100%;
-
-  overflow-y: auto;
-
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
   display: grid;
-
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-
-  gap: 18px;
-
-  padding: 24px;
-
-  align-content: start;
-}
-
-.profession-grid::-webkit-scrollbar {
-  width: 8px;
-}
-
-.profession-grid::-webkit-scrollbar-thumb {
-  background: #ffb7b7;
-
-  border-radius: 999px;
-}
-
-/* ===========================================
-   CARD
-=========================================== */
-:root {
-  --primary: #ff6b6b;
-  --primary-light: #ff9f9f;
-  --accent: #e1fffc;
-  --surface: #ffffff;
-  --text: #222;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  padding: 12px;
 }
 
 .profession-card {
   position: relative;
   overflow: hidden;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-
-  height: 165px;
-  padding: 20px;
-
-  border-radius: 24px;
-  border: 3px solid rgba(255,255,255,.15);
-
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 10px 6px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.22);
   cursor: pointer;
-
-  background:
-    linear-gradient(
-      145deg,
-      #ffcbcb 0%,
-      #ffc6c6 35%,
-      #ffdae7 50%,
-      #c5d9ff 75%,
-      #e1fffc 100%
-    );
-
-  box-shadow:
-    0 12px 30px rgba(0,0,0,.08),
-    inset 0 1px rgba(255,255,255,.35);
-
-  transition:
-    transform .35s,
-    box-shadow .35s,
-    border-color .35s;
+  background: #2b2626;
+  box-shadow: 0 8px 18px rgba(23, 19, 19, 0.08);
 }
 
-.profession-card > * {
-  position: relative;
-
-  z-index: 2;
-}
-
-.profession-card img {
-  position: absolute;
+.profession-cover {
+  position: absolute !important;
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.profession-card::before{
-    content:"";
-
-    position:absolute;
-    inset:-30%;
-
-    background:
-      radial-gradient(circle,rgba(255,255,255,.35),transparent 65%);
-
-    opacity:.6;
-
-    transition:.45s;
-
-    transform:scale(.9);
-
-    z-index:0;
+.profession-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(23, 19, 19, 0.28);
+  pointer-events: none;
 }
 
-.profession-name{
-
-    width:100%;
-
-    text-align:center;
-
-    font-size:17px;
-
-    font-weight:700;
-
-    letter-spacing:.3px;
-
-    color:white;
-
-    background:none;
-
-    -webkit-text-fill-color:white;
-
-    text-shadow:
-        0 2px 10px rgba(0,0,0,.18);
+.profession-main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
 }
 
-.profession-card span {
-  color: white;
-
-  font-size: 17px;
-
-  font-weight: 700;
-
-  line-height: 1.35;
-
-  max-width: 95%;
+.profession-name {
+  max-width: 100%;
+  padding: 5px 8px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #fff;
+  background: rgba(23, 19, 19, 0.72);
 }
 
+.profession-card.selected {
+  border-color: #ff6b6b;
+  box-shadow:
+    0 0 0 2px #ff6b6b,
+    0 10px 24px rgba(255, 107, 107, 0.28);
+}
 
-.profession-card.selected{
-
-    transform:translateY(-5px);
-
-    border-color:white;
-
-    box-shadow:
-        0 0 0 2px #fff,
-        0 18px 45px rgba(255,107,107,.30),
-        0 0 45px rgba(127,228,255,.22);
+.profession-card.selected .profession-overlay {
+  background: rgba(217, 74, 74, 0.22);
 }
 
 .profession-check {
   position: absolute;
-
-  top: 14px;
-  right: 14px;
-
-  width: 32px;
-  height: 32px;
-
+  top: 6px;
+  right: 6px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ff6b6b;
+  color: #fff;
+}
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+.profession-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
   background: #fff;
-
-  color: #ff0000;
-
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-
-  z-index: 5;
+  color: #d94a4a;
+  box-shadow: 0 8px 18px rgba(23, 19, 19, 0.18);
+  flex-shrink: 0;
 }
 
-.profession-icon{
-
-    width:82px;
-    height:82px;
-
-    margin:auto;
-
-    border-radius:28px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:
-      rgba(255,255,255,.16);
-
-    backdrop-filter:blur(24px);
-
-    -webkit-backdrop-filter:blur(24px);
-
-    border:1px solid rgba(255,255,255,.25);
-
-    color:white;
-
-    box-shadow:
-        inset 0 1px rgba(255,255,255,.45),
-        0 16px 35px rgba(0,0,0,.15);
-
-    transition:.35s;
+.profession-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: currentColor;
 }
 
-.profession-icon svg{
-
-    width:42px;
-    height:42px;
-
-    stroke-width:2.2;
-}
-.profession-card:hover .profession-icon{
-
-    transform:
-        translateY(-6px)
-        scale(1.08)
-        rotate(-4deg);
-
-    box-shadow:
-        inset 0 1px rgba(255,255,255,.45),
-        0 22px 45px rgba(255,255,255,.18);
-}
-
-
-.profession-card:hover{
-
-    transform:
-        translateY(-8px)
-        scale(1.03);
-
-    box-shadow:
-        0 24px 55px rgba(255,107,107,.18),
-        0 10px 25px rgba(127,228,255,.18);
-}
-
-.profession-card:hover::before{
-
-    transform:scale(1.15);
-
-    opacity:1;
-}
-
-.profession-card:hover::after {
-  opacity: 0.9;
-
-  transform: scale(1.2);
-}
-
-.profession-card.selected .check {
-  position: absolute;
-
-  top: 14px;
-  right: 14px;
-
-  width: 32px;
-  height: 32px;
-
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: white;
-
-  color: var(--primary);
-
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+.profession-card:hover {
+  transform: translateY(-2px);
 }
 
 /* ===========================================
@@ -1089,7 +1056,7 @@
 
 @media (max-width: 900px) {
   .profession-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 
@@ -1099,7 +1066,7 @@
   }
 
   .profession-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .location-row {
@@ -1563,7 +1530,7 @@
   gap: 14px;
 }
 
-.project-input-icon svg {
+.project-input-icon > svg {
   width: 52px;
   height: 52px;
 
@@ -1584,19 +1551,28 @@
   transition: 0.3s;
 }
 
-.project-input-icon:hover svg {
+.project-input-icon:hover > svg {
   transform: translateY(-2px);
 
   background: linear-gradient(135deg, #d4fbff, #ffffff);
 }
 
-.project-input-icon input,
-.project-input-icon select {
+.price-input-wrap,
+.project-input-icon .custom-select {
   flex: 1;
+  min-width: 0;
+}
+
+.project-input-icon input,
+.project-input-icon select,
+.custom-select-trigger {
+  flex: 1;
+
+  width: 100%;
 
   height: 56px;
 
-  padding: 0 22px;
+  padding: 0 18px;
 
   border: none;
 
@@ -1621,8 +1597,13 @@
   color: #9b9b9b;
 }
 
+.custom-select-trigger.is-placeholder {
+  color: #9b9b9b;
+}
+
 .project-input-icon input:focus,
-.project-input-icon select:focus {
+.project-input-icon select:focus,
+.custom-select-trigger:focus-visible {
   background: #fff;
 
   box-shadow:
@@ -1657,11 +1638,7 @@
 
   z-index:2;
 
-  background:rgba(255,255,255,.18);
-
-  backdrop-filter:blur(4px);
-
-    -webkit-backdrop-filter:blur(24px);
+  background:rgba(255,255,255,.92);
 
   display: flex;
   flex-direction: column;
@@ -1826,13 +1803,9 @@
 
   background-size:400%;
 
-  filter:blur(10px);
-
   opacity:0;
 
   transition:.35s;
-
-  animation:professionGlow 8s linear infinite;
 
   z-index:-2;
 }
@@ -2119,13 +2092,10 @@
 }
 
 .custom-select-trigger {
-  width: 100%;
-  height: 56px;
-
-  padding: 0 22px;
-
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
 
   transition:
     border-color 0.28s ease,
@@ -2133,20 +2103,6 @@
     box-shadow 0.28s ease,
     transform 0.28s ease,
     color 0.28s ease;
-
-  align-items: center;
-
-  border: none;
-
-  border-radius: 18px;
-
-  background: #f7f8fb;
-
-  cursor: pointer;
-
-  font-size: 15px;
-
-  font-weight: 500;
 }
 
 .custom-select-trigger:hover {
@@ -2260,9 +2216,17 @@
 }
 
 .custom-select-trigger svg {
+  width: 32px;
+  height: 32px;
+  padding: 7px;
+  border-radius: 50%;
+  background: #eef3f7;
+  color: #ff6b6b;
+  flex-shrink: 0;
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.25s;
+    color 0.25s,
+    background 0.25s;
 }
 
 .custom-select-trigger:hover svg {

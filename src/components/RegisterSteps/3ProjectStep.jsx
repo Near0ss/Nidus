@@ -1,6 +1,21 @@
 import { useRef, useState, useEffect } from "react";
 import { Upload, DollarSign, Clock3, ChevronDown } from "lucide-react";
 
+function centsFromStored(value) {
+  if (!value) return 0;
+  const amount = Number(String(value).replace(",", "."));
+  if (!Number.isFinite(amount) || amount <= 0) return 0;
+  return Math.round(amount * 100);
+}
+
+function formatBRL(cents) {
+  if (!cents) return "";
+  return (cents / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
+
 function ProjectStep({ data, updateField, nextStep, prevStep }) {
   const inputRef = useRef(null);
 
@@ -65,7 +80,8 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
 
   const imagesValid = images.length >= 2;
 
-  const priceValid = Number(initialPrice) > 0;
+  const priceCents = centsFromStored(initialPrice);
+  const priceValid = priceCents > 0;
 
   const deliveryValid = deliveryTime.length > 0;
 
@@ -73,8 +89,6 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
 
   return (
     <div className="step-card project-step">
-      <div className="step-icon">✣</div>
-
       <h1>Seu trabalho</h1>
 
       <p>Mostre a todos o estilo do seu trabalho</p>
@@ -122,13 +136,21 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
         <div className="project-input-icon">
           <DollarSign size={18} />
 
-          <input
-            type="number"
-            placeholder="Preço inicial (R$)"
-            value={initialPrice}
-            onChange={(e) => updateField("initialPrice", e.target.value)}
-            className={priceValid ? "valid-input" : ""}
-          />
+          <div className="price-input-wrap">
+            <input
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="R$ 0,00"
+              value={formatBRL(priceCents)}
+              onChange={(e) => {
+                const digits = e.target.value.replace(/\D/g, "").slice(0, 8);
+                const cents = Number(digits || "0");
+                updateField("initialPrice", cents ? (cents / 100).toFixed(2) : "");
+              }}
+              className={priceValid ? "valid-input" : ""}
+            />
+          </div>
         </div>
 
         <div className="project-input-icon">
@@ -137,7 +159,7 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
           <div className="custom-select" ref={deliveryRef}>
             <button
               type="button"
-              className="custom-select-trigger"
+              className={`custom-select-trigger ${deliveryTime ? "" : "is-placeholder"}`}
               onClick={() => setShowDelivery(!showDelivery)}
             >
               {deliveryTime || "Prazo médio"}

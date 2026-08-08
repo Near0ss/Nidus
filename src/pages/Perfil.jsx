@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Navbar2 from "../components/Navbar2";
+import Footer2 from "../components/Footer2";
 
 import ProfileBanner from "../components/Perfil/ProfileBanner";
-import SidebarProfile from "../components/Perfil/SidebarProfile";
 import ProfileTabs from "../components/Perfil/ProfileTabs";
 
 import Dashboard from "../components/Perfil/Dashboard/Dashboard";
@@ -16,164 +15,108 @@ import Statistics from "../components/Perfil/Statistics/Statistics";
 import Settings from "../components/Perfil/Settings/Settings";
 import EditProfileModal from "../components/Perfil/EditProfileModal";
 
+import "../css/Home.css";
 import "../css/Perfil.css";
 import { apiFetch } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function Perfil() {
   const navigate = useNavigate();
+  const { user: authUser, updateUser: updateAuthUser } = useAuth();
 
   const [tab, setTab] = useState("dashboard");
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(authUser);
   const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("nidus_user");
-
-    if (!stored) {
-      navigate("/landing");
+    if (!authUser?.id) {
+      navigate("/authchoice");
       return;
     }
 
-    const savedUser = JSON.parse(stored);
-
-    apiFetch(`/api/users/${savedUser.id}`)
+    apiFetch(`/api/users/${authUser.id}`)
       .then((data) => {
-        const current = data.user || savedUser;
-
+        const current = data.user || authUser;
         setUser(current);
-        localStorage.setItem("nidus_user", JSON.stringify(current));
-
-        if (current.type === "normal") {
-          setTab("dashboard");
-        }
+        updateAuthUser(current);
+        if (current.type === "normal") setTab("dashboard");
       })
       .catch(() => {
-        setUser(savedUser);
-      })
-      .finally(() => setLoading(false));
-  }, [navigate]);
+        setUser(authUser);
+      });
+  }, [authUser?.id, navigate, updateAuthUser]);
 
   function updateUser(values) {
     setUser((prev) => {
-      const updated = {
-        ...prev,
-        ...values,
-      };
-
-      localStorage.setItem("nidus_user", JSON.stringify(updated));
-      window.dispatchEvent(new Event("nidus-user-updated"));
+      const updated = { ...prev, ...values };
+      updateAuthUser(updated);
       return updated;
     });
   }
 
-  if (loading) {
-    return (
-      <>
-        <Navbar2 />
-
-        <div className="perfil-loading">
-          <div className="perfil-loading-card">
-            Carregando perfil...
-          </div>
-        </div>
-      </>
-    );
-  }
+  if (!user) return <div className="app-boot">Carregando perfil…</div>;
 
   return (
-    <>
-      <Navbar2 />
+    <div className="perfil-page">
 
-      <main className="perfil-page">
-
-        <ProfileBanner
-          user={user}
-          updateUser={updateUser}
-        />
-
-        <ProfileTabs
-          tab={tab}
-          setTab={setTab}
-          user={user}
-        />
-
-        <section className="perfil-main">
-
-          <SidebarProfile
+      <div className="perfil-layout">
+        <main id="conteudo-principal" className="perfil-feed">
+          <ProfileBanner
             user={user}
-            setTab={setTab}
-            openEditModal={() => setShowEditModal(true)}
+            updateUser={updateUser}
+            onEditProfile={() => setShowEditModal(true)}
           />
 
-          <div className="perfil-content">
+          <ProfileTabs tab={tab} setTab={setTab} user={user} />
 
-            {tab === "dashboard" && (
-              <Dashboard
-                user={user}
-                onEditProfile={() => setShowEditModal(true)}
-                onNewProject={() =>
-                  user?.type === "freelancer"
-                    ? setTab("services")
-                    : setShowEditModal(true)
-                }
-              />
-            )}
+          {tab === "dashboard" && (
+            <Dashboard
+              user={user}
+              onEditProfile={() => setShowEditModal(true)}
+              onNewProject={() =>
+                user?.type === "freelancer" ? setTab("services") : navigate("/home")
+              }
+            />
+          )}
 
-            {tab === "services" && user?.type === "freelancer" && (
-              <Services
-                user={user}
-                updateUser={updateUser}
-              />
-            )}
+          {tab === "services" && user?.type === "freelancer" && (
+            <Services user={user} updateUser={updateUser} />
+          )}
 
-            {tab === "finance" && user?.type === "freelancer" && (
-              <Finance
-                user={user}
-              />
-            )}
+          {tab === "finance" && user?.type === "freelancer" && (
+            <Finance user={user} />
+          )}
 
-            {tab === "messages" && user?.type === "freelancer" && (
-              <Messages
-                user={user}
-              />
-            )}
+          {tab === "messages" && user?.type === "freelancer" && (
+            <Messages user={user} />
+          )}
 
-            {tab === "social" && (
-              <Social
-                user={user}
-              />
-            )}
+          {tab === "social" && (
+            <Social user={user} updateUser={updateUser} />
+          )}
 
-            {tab === "statistics" && user?.type === "freelancer" && (
-              <Statistics
-                user={user}
-              />
-            )}
+          {tab === "statistics" && user?.type === "freelancer" && (
+            <Statistics user={user} />
+          )}
 
-            {tab === "settings" && (
-              <Settings
-                user={user}
-                updateUser={updateUser}
-              />
-            )}
+          {tab === "settings" && (
+            <Settings user={user} updateUser={updateUser} />
+          )}
+        </main>
+      </div>
 
-          </div>
+      <Footer2 />
 
-        </section>
-
-        {showEditModal && (
-          <EditProfileModal
-            user={user}
-            onClose={() => setShowEditModal(false)}
-            updateUser={(updated) => {
-              setUser(updated);
-              localStorage.setItem("nidus_user", JSON.stringify(updated));
-            }}
-          />
-        )}
-
-      </main>
-    </>
+      {showEditModal && (
+        <EditProfileModal
+          user={user}
+          onClose={() => setShowEditModal(false)}
+          updateUser={(updated) => {
+            setUser(updated);
+            updateAuthUser(updated);
+          }}
+        />
+      )}
+    </div>
   );
 }

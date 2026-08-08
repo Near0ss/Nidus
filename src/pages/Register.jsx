@@ -5,12 +5,10 @@ import "../css/Register.css";
 
 import Login from "../components/Login";
 
-import { Check } from "lucide-react";
-
-import logo from "../assets/logo.png";
-import Background from "../assets/LoginNidus.png";
-import PreviewBg from "../assets/loginNidus4.png";
-import FinalPreview from "../assets/Nidus3.jfif";
+import { ArrowLeft, Check } from "lucide-react";
+import Background from "../assets/LoginNidus.webp";
+import PreviewBg from "../assets/loginNidus4.webp";
+import FinalPreview from "../assets/Login.webp";
 
 import UserStep from "../components/RegisterSteps/1UserStep";
 import ProfileStep from "../components/RegisterSteps/2ProfileStep";
@@ -18,9 +16,13 @@ import ProjectStep from "../components/RegisterSteps/3ProjectStep";
 import FinalStep from "../components/RegisterSteps/4FinalStep";
 
 import professionalSuggestions from "../data/professionalTitles";
+import { coverForTitle } from "../data/professionCovers";
 import { apiFetch } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
+import { normalizeUsername } from "../lib/username";
 
 function Register() {
+  const { login } = useAuth();
   const totalSteps = 4;
 
   const [step, setStep] = useState(1);
@@ -64,15 +66,19 @@ function Register() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          email: String(formData.email || "").trim().toLowerCase(),
+          username: normalizeUsername(formData.username),
+        }),
       });
 
-      setSuccess('Conta criada com sucesso!');
-      // store minimal user and navigate to perfil
       if (data.user) {
-        localStorage.setItem('nidus_user', JSON.stringify(data.user));
+        login(data.user, data.token);
         navigate('/perfil');
+        return;
       }
+      setSuccess('Conta criada com sucesso!');
       setFormData({
         email: "",
         username: "",
@@ -107,7 +113,7 @@ function Register() {
   function updateField(name, value) {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "username" ? normalizeUsername(value) : value,
     }));
   }
 
@@ -155,7 +161,17 @@ function Register() {
       />
     ),
 
-    4: <FinalStep data={formData} prevStep={prevStep} onSubmit={submitRegister} isLoading={isLoading} error={error} success={success} />,
+    4: (
+      <FinalStep
+        data={formData}
+        prevStep={prevStep}
+        goToStep={setStep}
+        onSubmit={submitRegister}
+        isLoading={isLoading}
+        error={error}
+        success={success}
+      />
+    ),
   };
 
   return (
@@ -163,7 +179,14 @@ function Register() {
       <div className="register-window">
         <section className="register-left">
           <div className="register-logo-area">
-            <img src={logo} alt="Nidus" className="register-logo" />
+            <button
+              type="button"
+              className="register-back"
+              onClick={() => (step === 1 ? navigate("/authchoice") : prevStep())}
+            >
+              <ArrowLeft size={18} strokeWidth={2.2} aria-hidden="true" />
+              Voltar
+            </button>
           </div>
 
           <div className="register-content">{steps[step]}</div>
@@ -205,33 +228,42 @@ function Register() {
                 {step === 2 ? (
                   <div className="profession-grid">
                     {professionalSuggestions.map((profession) => {
-                      const selected = formData.professionalTitle.includes(
-                        profession.title,
-                      );
-
+                      const selected = formData.professionalTitle.includes(profession.title);
                       const Icon = profession.icon;
 
                       return (
-                        <button
+                        <div
                           key={profession.title}
-                          type="button"
+                          role="button"
+                          tabIndex={0}
                           className={`profession-card ${selected ? "selected" : ""}`}
                           onClick={() => toggleTitle(profession.title)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              toggleTitle(profession.title);
+                            }
+                          }}
                         >
-                          <div className="profession-icon">
-                            <Icon size={28} strokeWidth={2.2} />
-                          </div>
-
-                          <div className="profession-name">
-                            {profession.title}
-                          </div>
-
-                          {selected && (
-                            <div className="profession-check">
-                              <Check size={18} strokeWidth={3} />
+                          <img
+                            src={coverForTitle(profession.title)}
+                            alt=""
+                            className="profession-cover"
+                            draggable="false"
+                          />
+                          <span className="profession-overlay" aria-hidden="true" />
+                          <div className="profession-main">
+                            <div className="profession-icon">
+                              <Icon size={28} strokeWidth={2.35} />
                             </div>
-                          )}
-                        </button>
+                            <div className="profession-name">{profession.title}</div>
+                          </div>
+                          {selected ? (
+                            <div className="profession-check">
+                              <Check size={14} strokeWidth={3} />
+                            </div>
+                          ) : null}
+                        </div>
                       );
                     })}
                   </div>

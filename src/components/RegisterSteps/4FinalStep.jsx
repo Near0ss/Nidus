@@ -6,13 +6,13 @@ import {
   BadgeCheck,
   Mail,
 } from "lucide-react";
+import { normalizeUsername } from "../../lib/username";
 
-function FinalStep({ data, prevStep, onSubmit, isLoading, error, success }) {
-    
+function FinalStep({ data, prevStep, goToStep, onSubmit, isLoading, error, success }) {
+  const username = normalizeUsername(data.username);
+
   return (
     <div className="step-card final-step">
-      <div className="step-icon">♥</div>
-
       <h1>Finalizando</h1>
 
       <p>Clique na informação se algo estiver incorreto</p>
@@ -23,15 +23,15 @@ function FinalStep({ data, prevStep, onSubmit, isLoading, error, success }) {
           Conta
         </div>
 
-        <div className="summary-item">
+        <button type="button" className="summary-item" onClick={() => goToStep?.(1)}>
           <BadgeCheck size={16} />
-          <span>{data.username}</span>
-        </div>
+          <span>@{username}</span>
+        </button>
 
-        <div className="summary-item">
+        <button type="button" className="summary-item" onClick={() => goToStep?.(1)}>
           <Mail size={16} />
           <span>{data.email}</span>
-        </div>
+        </button>
       </div>
 
       <div className="summary-section">
@@ -40,39 +40,37 @@ function FinalStep({ data, prevStep, onSubmit, isLoading, error, success }) {
           Perfil profissional
         </div>
 
-        <div className="summary-item">
+        <button type="button" className="summary-item" onClick={() => goToStep?.(2)}>
           <Building2 size={16} />
           <span>{data.businessName}</span>
-        </div>
+        </button>
 
-        <div className="summary-item">
+        <button type="button" className="summary-item" onClick={() => goToStep?.(2)}>
           <Globe size={16} />
           <span>{data.country}</span>
-        </div>
+        </button>
 
-        <div className="summary-item">
+        <button type="button" className="summary-item" onClick={() => goToStep?.(2)}>
           <MapPin size={16} />
           <span>{data.state}</span>
-        </div>
+        </button>
 
-        <div className="summary-tags">
+        <button type="button" className="summary-tags" onClick={() => goToStep?.(2)}>
           {data.professionalTitle.map((title) => (
             <span key={title}>{title}</span>
           ))}
-        </div>
+        </button>
       </div>
 
-      
-
       {error && (
-        <div className="error-message" style={{ color: '#ef4444', marginBottom: '1rem', padding: '0.75rem', backgroundColor: '#fee2e2', borderRadius: '0.5rem', textAlign: 'center' }}>
-          ❌ {error}
+        <div className="field-error field-error--box">
+          {error}
         </div>
       )}
 
       {success && (
-        <div className="success-message" style={{ color: '#10b981', marginBottom: '1rem', padding: '0.75rem', backgroundColor: '#d1fae5', borderRadius: '0.5rem', textAlign: 'center' }}>
-          ✅ {success}
+        <div className="field-success field-success--box">
+          {success}
         </div>
       )}
 
@@ -85,14 +83,14 @@ function FinalStep({ data, prevStep, onSubmit, isLoading, error, success }) {
         Voltar
       </button>
 
-      <button 
+      <button
         type="button"
         className="step-next-btn active"
         onClick={onSubmit}
         disabled={isLoading}
-        style={{ opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}
+        style={{ opacity: isLoading ? 0.7 : 1, cursor: isLoading ? "not-allowed" : "pointer" }}
       >
-        <span>{isLoading ? '⏳ Criando conta...' : 'Criar conta'}</span>
+        <span>{isLoading ? "Criando conta..." : "Criar conta"}</span>
       </button>
     </div>
   );

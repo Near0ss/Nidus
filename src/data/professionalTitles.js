@@ -14,16 +14,14 @@ import {
   Cloud,
   Brain,
   Camera,
-  Video,
-  Image,
+  Images,
   BookOpen,
   Megaphone,
   Briefcase,
   Building2,
   Home,
   PencilRuler,
-  Package,
-  Globe,
+  Box,
   Brush,
   FileText,
   GraduationCap,
@@ -39,90 +37,227 @@ import {
   ShoppingBag,
   Gem,
   Shirt,
-  CheckSquare,
+  Handshake,
+  Layers,
+  Sparkles,
+  Terminal,
+  CircuitBoard,
+  LineChart,
+  Languages,
+  Target,
+  Clapperboard,
+  Scissors,
+  Landmark,
 } from "lucide-react";
 
-const professionalSuggestions = [
-  // DESIGN
-  { title: "UI Designer", icon: Monitor },
-  { title: "UX Designer", icon: LayoutTemplate },
-  { title: "Product Designer", icon: PenTool },
-  { title: "Graphic Designer", icon: Palette },
-  { title: "Web Designer", icon: Laptop },
-  { title: "Brand Designer", icon: Paintbrush },
-  { title: "Logo Designer", icon: Brush },
-  { title: "Illustrator", icon: PenTool },
-  { title: "Concept Artist", icon: Brush },
-  { title: "3D Artist", icon: Package },
-  { title: "Motion Designer", icon: Video },
-  { title: "Figma Designer", icon: PenTool },
-
-  // DEVELOPMENT
-  { title: "Frontend Developer", icon: Code2 },
-  { title: "Backend Developer", icon: Database },
-  { title: "Full Stack Developer", icon: Cpu },
-  { title: "React Developer", icon: Code2 },
-  { title: "Node.js Developer", icon: ServerCog },
-  { title: "Python Developer", icon: Code2 },
-  { title: "Mobile Developer", icon: Smartphone },
-  { title: "Game Developer", icon: Gamepad2 },
-  { title: "Software Engineer", icon: Cpu },
-  { title: "DevOps Engineer", icon: Cloud },
-  { title: "Cloud Engineer", icon: Cloud },
-
-  // AI / DATA
-  { title: "AI Engineer", icon: Brain },
-  { title: "Machine Learning Engineer", icon: Brain },
-  { title: "Data Scientist", icon: BarChart3 },
-  { title: "Data Analyst", icon: BarChart3 },
-  { title: "Prompt Engineer", icon: Bot },
-
-  // CONTENT
-  { title: "Copywriter", icon: FileText },
-  { title: "Content Creator", icon: Image },
-  { title: "Technical Writer", icon: BookOpen },
-  { title: "Translator", icon: Globe },
-
-  // MARKETING
-  { title: "Marketing Specialist", icon: Megaphone },
-  { title: "SEO Specialist", icon: Search },
-  { title: "Social Media Manager", icon: Users },
-  { title: "Brand Strategist", icon: Briefcase },
-
-  // VIDEO
-  { title: "Video Editor", icon: Video },
-  { title: "Photographer", icon: Camera },
-  { title: "Music Producer", icon: Music4 },
-  { title: "Podcast Editor", icon: Mic2 },
-
-  // BUSINESS
-  { title: "Project Manager", icon: Briefcase },
-  { title: "Product Manager", icon: Briefcase },
-  { title: "Business Consultant", icon: Building2 },
-  { title: "Virtual Assistant", icon: Users },
-
-  // ARCHITECTURE
-  { title: "Architect", icon: Home },
-  { title: "Interior Designer", icon: PencilRuler },
-
-  // EDUCATION
-  { title: "Tutor", icon: GraduationCap },
-  { title: "Course Creator", icon: GraduationCap },
-
-  // HEALTH
-  { title: "Nutritionist", icon: HeartPulse },
-  { title: "Personal Trainer", icon: Dumbbell },
-
-  // E-COMMERCE
-  { title: "E-commerce Manager", icon: ShoppingBag },
-
-  // FASHION
-  { title: "Fashion Designer", icon: Shirt },
-  { title: "Jewelry Designer", icon: Gem },
-
-  // OTHERS
-  { title: "Travel Planner", icon: Plane },
-  { title: "Consultant", icon: CheckSquare },
+export const PROFESSION_GROUPS = [
+  {
+    id: "design",
+    label: "Design",
+    items: [
+      { title: "UI Designer", icon: Monitor },
+      { title: "UX Designer", icon: LayoutTemplate },
+      { title: "Product Designer", icon: Layers },
+      { title: "Graphic Designer", icon: Palette },
+      { title: "Web Designer", icon: Laptop },
+      { title: "Brand Designer", icon: Paintbrush },
+      { title: "Logo Designer", icon: Brush },
+      { title: "Illustrator", icon: PenTool },
+      { title: "Concept Artist", icon: Sparkles },
+      { title: "3D Artist", icon: Box },
+      { title: "Motion Designer", icon: Clapperboard },
+      { title: "Figma Designer", icon: PenTool },
+    ],
+  },
+  {
+    id: "dev",
+    label: "Desenvolvimento",
+    items: [
+      { title: "Frontend Developer", icon: Code2 },
+      { title: "Backend Developer", icon: Database },
+      { title: "Full Stack Developer", icon: Cpu },
+      { title: "React Developer", icon: Terminal },
+      { title: "Node.js Developer", icon: ServerCog },
+      { title: "Python Developer", icon: CircuitBoard },
+      { title: "Mobile Developer", icon: Smartphone },
+      { title: "Game Developer", icon: Gamepad2 },
+      { title: "Software Engineer", icon: Code2 },
+      { title: "DevOps Engineer", icon: Cloud },
+      { title: "Cloud Engineer", icon: Cloud },
+    ],
+  },
+  {
+    id: "data",
+    label: "IA e dados",
+    items: [
+      { title: "AI Engineer", icon: Brain },
+      { title: "Machine Learning Engineer", icon: Sparkles },
+      { title: "Data Scientist", icon: BarChart3 },
+      { title: "Data Analyst", icon: LineChart },
+      { title: "Prompt Engineer", icon: Bot },
+    ],
+  },
+  {
+    id: "content",
+    label: "Conteúdo",
+    items: [
+      { title: "Copywriter", icon: FileText },
+      { title: "Content Creator", icon: Images },
+      { title: "Technical Writer", icon: BookOpen },
+      { title: "Translator", icon: Languages },
+    ],
+  },
+  {
+    id: "marketing",
+    label: "Marketing",
+    items: [
+      { title: "Marketing Specialist", icon: Megaphone },
+      { title: "SEO Specialist", icon: Search },
+      { title: "Social Media Manager", icon: Users },
+      { title: "Brand Strategist", icon: Target },
+    ],
+  },
+  {
+    id: "av",
+    label: "Audiovisual",
+    items: [
+      { title: "Video Editor", icon: Scissors },
+      { title: "Photographer", icon: Camera },
+      { title: "Music Producer", icon: Music4 },
+      { title: "Podcast Editor", icon: Mic2 },
+    ],
+  },
+  {
+    id: "business",
+    label: "Negócios",
+    items: [
+      { title: "Project Manager", icon: Briefcase },
+      { title: "Product Manager", icon: Landmark },
+      { title: "Business Consultant", icon: Building2 },
+      { title: "Virtual Assistant", icon: Handshake },
+    ],
+  },
+  {
+    id: "space",
+    label: "Arquitetura e interiores",
+    items: [
+      { title: "Architect", icon: Home },
+      { title: "Interior Designer", icon: PencilRuler },
+    ],
+  },
+  {
+    id: "edu",
+    label: "Educação",
+    items: [
+      { title: "Tutor", icon: GraduationCap },
+      { title: "Course Creator", icon: BookOpen },
+    ],
+  },
+  {
+    id: "health",
+    label: "Saúde e bem-estar",
+    items: [
+      { title: "Nutritionist", icon: HeartPulse },
+      { title: "Personal Trainer", icon: Dumbbell },
+    ],
+  },
+  {
+    id: "commerce",
+    label: "Moda e e-commerce",
+    items: [
+      { title: "E-commerce Manager", icon: ShoppingBag },
+      { title: "Fashion Designer", icon: Shirt },
+      { title: "Jewelry Designer", icon: Gem },
+    ],
+  },
+  {
+    id: "other",
+    label: "Outros",
+    items: [
+      { title: "Travel Planner", icon: Plane },
+      { title: "Consultant", icon: Briefcase },
+    ],
+  },
 ];
+
+const GROUP_COVERS = {
+  design: "/professions/design.webp",
+  dev: "/professions/dev.webp",
+  data: "/professions/data.webp",
+  content: "/professions/write.webp",
+  marketing: "/professions/marketing.webp",
+  av: "/professions/photo.webp",
+  business: "/professions/office.webp",
+  space: "/professions/arch.webp",
+  edu: "/professions/edu.webp",
+  health: "/professions/health.webp",
+  commerce: "/professions/fashion.webp",
+  other: "/professions/travel.webp",
+};
+
+const TITLE_COVERS = {
+  "UI Designer": "/professions/ui.webp",
+  "UX Designer": "/professions/ux.webp",
+  "Product Designer": "/professions/design.webp",
+  "Graphic Designer": "/professions/design.webp",
+  "Web Designer": "/professions/ui.webp",
+  "Brand Designer": "/professions/design.webp",
+  "Logo Designer": "/professions/design.webp",
+  Illustrator: "/professions/design.webp",
+  "Concept Artist": "/professions/design.webp",
+  "3D Artist": "/professions/game.webp",
+  "Motion Designer": "/professions/video.webp",
+  "Figma Designer": "/professions/ux.webp",
+  "Frontend Developer": "/professions/dev.webp",
+  "Backend Developer": "/professions/backend.webp",
+  "Full Stack Developer": "/professions/dev.webp",
+  "React Developer": "/professions/dev.webp",
+  "Node.js Developer": "/professions/backend.webp",
+  "Python Developer": "/professions/data.webp",
+  "Mobile Developer": "/professions/mobile.webp",
+  "Game Developer": "/professions/game.webp",
+  "Software Engineer": "/professions/dev.webp",
+  "DevOps Engineer": "/professions/backend.webp",
+  "Cloud Engineer": "/professions/backend.webp",
+  "AI Engineer": "/professions/ai.webp",
+  "Machine Learning Engineer": "/professions/ai.webp",
+  "Data Scientist": "/professions/data.webp",
+  "Data Analyst": "/professions/data.webp",
+  "Prompt Engineer": "/professions/ai.webp",
+  Copywriter: "/professions/write.webp",
+  "Content Creator": "/professions/photo.webp",
+  "Technical Writer": "/professions/write.webp",
+  Translator: "/professions/write.webp",
+  "Marketing Specialist": "/professions/marketing.webp",
+  "SEO Specialist": "/professions/marketing.webp",
+  "Social Media Manager": "/professions/marketing.webp",
+  "Brand Strategist": "/professions/marketing.webp",
+  "Video Editor": "/professions/video.webp",
+  Photographer: "/professions/photo.webp",
+  "Music Producer": "/professions/music.webp",
+  "Podcast Editor": "/professions/music.webp",
+  "Project Manager": "/professions/office.webp",
+  "Product Manager": "/professions/office.webp",
+  "Business Consultant": "/professions/office.webp",
+  "Virtual Assistant": "/professions/office.webp",
+  Architect: "/professions/arch.webp",
+  "Interior Designer": "/professions/arch.webp",
+  Tutor: "/professions/edu.webp",
+  "Course Creator": "/professions/edu.webp",
+  Nutritionist: "/professions/health.webp",
+  "Personal Trainer": "/professions/health.webp",
+  "E-commerce Manager": "/professions/fashion.webp",
+  "Fashion Designer": "/professions/fashion.webp",
+  "Jewelry Designer": "/professions/fashion.webp",
+  "Travel Planner": "/professions/travel.webp",
+  Consultant: "/professions/office.webp",
+};
+
+const professionalSuggestions = PROFESSION_GROUPS.flatMap((group) =>
+  group.items.map((item) => ({
+    ...item,
+    cover: TITLE_COVERS[item.title] || GROUP_COVERS[group.id],
+  })),
+);
 
 export default professionalSuggestions;

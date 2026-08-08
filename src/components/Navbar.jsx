@@ -1,50 +1,50 @@
-import "../css/Navbar.css";
-import logo from "../assets/logotext.png";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import '../css/Navbar.css';
+import logo from '../assets/logotext.png';
 
 function Navbar() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  function closeAll() {
+    setOpen(false);
+  }
+
   return (
-    <nav className="nav-navbar">
-
+    <nav className="nav-navbar" aria-label="Principal">
       <div className="nav-navbar-container">
+        <Link to="/landing" className="nav-navbar-left" onClick={closeAll}>
+          <img src={logo} alt="Nidus" className="nav-navbar-logo" />
+        </Link>
 
-        <div className="nav-navbar-left">
-          <img
-            src={logo}
-            alt="Nidus"
-            className="nav-navbar-logo"
-          />
-        </div>
+        <button
+          type="button"
+          className="nav-menu-toggle"
+          aria-expanded={open}
+          aria-controls="nav-marketing-links"
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? 'Fechar' : 'Menu'}
+        </button>
 
-        <div className="nav-navbar-right">
-
-          <div className="nav-dropdown">
-
-            <button className="nav-button">
-              Recursos
-              <span className="nav-arrow">⌄</span>
-            </button>
-
-            <div className="nav-dropdown-menu">
-              <a href="#">Visão geral</a>
-              <a href="#">Guias de carreira</a>
-              <a href="#">Projetos por encomenda</a>
-              <a href="#">Aprendizagem criativa</a>
-            </div>
-
-          </div>
-
-          <a href="#" className="nav-link">
+        <div id="nav-marketing-links" className={`nav-navbar-right ${open ? 'is-open' : ''}`}>
+          <Link to="/home" className="nav-link" onClick={closeAll}>
             Explorar
-          </a>
+          </Link>
 
-          <button className="nav-start-button">
-            Start
+          <button
+            type="button"
+            className="nav-start-button"
+            onClick={() => {
+              closeAll();
+              navigate('/authchoice');
+            }}
+          >
+            Começar
           </button>
-
         </div>
-
       </div>
-
     </nav>
   );
 }

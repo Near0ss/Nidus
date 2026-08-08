@@ -5,10 +5,16 @@ export function validateEmail(email) {
   return emailRegex.test(email);
 }
 
+export function normalizeUsername(username) {
+  return String(username || "")
+    .trim()
+    .replace(/^@+/, "")
+    .replace(/[^a-zA-Z0-9_]/g, "")
+    .slice(0, 20);
+}
+
 export function validateUsername(username) {
-  // Username: 3-20 characters, alphanumeric and underscore
-  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-  return usernameRegex.test(username);
+  return /^[a-zA-Z0-9_]{3,20}$/.test(normalizeUsername(username));
 }
 
 export function validatePassword(password) {
@@ -18,12 +24,13 @@ export function validatePassword(password) {
 
 export function validateRegistrationData(data) {
   const errors = [];
+  const username = normalizeUsername(data.username);
 
   if (!data.email || !validateEmail(data.email)) {
     errors.push('Email inválido');
   }
 
-  if (!data.username || !validateUsername(data.username)) {
+  if (!username || !validateUsername(username)) {
     errors.push('Username deve ter 3-20 caracteres (apenas letras, números e underscore)');
   }
 
@@ -37,6 +44,27 @@ export function validateRegistrationData(data) {
 
   if (!data.country || data.country.trim().length === 0) {
     errors.push('País é obrigatório');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+}
+
+export function validateNormalUserData(data) {
+  const errors = [];
+
+  if (!data.name || String(data.name).trim().length === 0) {
+    errors.push('Nome é obrigatório');
+  }
+
+  if (!data.email || !validateEmail(data.email)) {
+    errors.push('Email inválido');
+  }
+
+  if (!data.password || !validatePassword(data.password)) {
+    errors.push('Senha deve ter no mínimo 6 caracteres');
   }
 
   return {

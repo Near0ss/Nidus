@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Camera,
   MapPin,
+  Pencil,
   X,
   ImagePlus,
 } from "lucide-react";
@@ -10,6 +11,7 @@ import { apiFetch } from "../../lib/api";
 export default function ProfileBanner({
   user,
   updateUser,
+  onEditProfile,
 }) {
   const [banner, setBanner] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -80,81 +82,75 @@ export default function ProfileBanner({
   const initials =
     (user?.username || user?.name)?.charAt(0).toUpperCase() || "N";
 
-  return (
-    <section className="profile-banner">
+  const displayName =
+    user?.type === "normal"
+      ? user?.name || user?.username || "Usuário"
+      : user?.businessName || user?.username || "Freelancer";
+  const role =
+    user?.type === "normal"
+      ? "Contratante"
+      : user?.professionalTitle?.join(" • ") || "Freelancer";
 
+  return (
+    <section className="perfil-hero">
       <div
-        className="profile-cover"
-        style={{
-          backgroundImage: banner
-            ? `url(${banner})`
-            : "linear-gradient(180deg,#4b4b4b,#2f2f2f)",
-        }}
+        className={`profile-cover${banner ? "" : " is-default"}`}
+        style={banner ? { backgroundImage: `url(${banner})` } : undefined}
       >
         <div className="profile-cover-overlay">
-
           <button
+            type="button"
             className="cover-button"
-            onClick={() =>
-              setShowModal(true)
-            }
+            onClick={() => {
+              setUploadMode("banner");
+              setShowModal(true);
+            }}
           >
             <Camera size={16} />
             Alterar banner
           </button>
-
         </div>
       </div>
 
-      <div className="profile-header">
-
-        <div
-          className="profile-avatar"
+      <div className="home-hero">
+        <button
+          type="button"
+          className="home-hero__orb perfil-orb"
           onClick={() => {
             setUploadMode("photo");
             setShowModal(true);
           }}
+          aria-label="Alterar foto de perfil"
         >
           {profilePhoto ? (
-            <img
-              className="profile-avatar-circle"
-              src={profilePhoto}
-              alt={user?.username || "Perfil"}
-            />
+            <img src={profilePhoto} alt="" />
           ) : (
-            <div className="profile-avatar-circle">
-              {initials}
-            </div>
+            <span>{initials}</span>
           )}
-        </div>
+        </button>
 
-        <div className="profile-user">
-
-          <h1>
-            {user?.type === "normal"
-              ? user?.name
-              : user?.businessName || user?.username}
-          </h1>
-
-          <span className="profile-profession">
-            {user?.type === "normal"
-              ? "Contratante Nidus"
-              : user?.professionalTitle?.join(" • ") || "Profissional Criativo"}
-          </span>
-
-          <div className="profile-location">
-
-            <MapPin size={15} />
-
-            <span>
-              {user?.country ||
-                "Brasil"}
-            </span>
-
+        <div className="home-hero__copy">
+          <span className="u-eyebrow">{role}</span>
+          <div className="perfil-hero__title-row">
+            <h1>{displayName}</h1>
+            {onEditProfile ? (
+              <button type="button" className="home-btn ghost" onClick={onEditProfile}>
+                <Pencil size={16} />
+                Editar perfil
+              </button>
+            ) : null}
           </div>
-
+          <p className="perfil-hero__meta">
+            <MapPin size={14} />
+            <span>
+              {user?.country || "Brasil"}
+              {user?.state ? ` · ${user.state}` : ""}
+            </span>
+          </p>
+          <p className="perfil-hero__bio">
+            {user?.bio || "Complete seu perfil para aparecer melhor no Nidus."}
+          </p>
         </div>
-
       </div>
 
       {showModal && (

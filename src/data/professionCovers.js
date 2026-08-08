@@ -1,0 +1,70 @@
+const files = import.meta.glob("../assets/professions/*.webp", {
+  eager: true,
+  import: "default",
+});
+
+function img(name) {
+  return files[`../assets/professions/${name}.webp`];
+}
+
+const BY_TITLE = {
+  "UI Designer": img("ui"),
+  "UX Designer": img("ux"),
+  "Product Designer": img("design"),
+  "Graphic Designer": img("design"),
+  "Web Designer": img("ui"),
+  "Brand Designer": img("design"),
+  "Logo Designer": img("design"),
+  Illustrator: img("design"),
+  "Concept Artist": img("design"),
+  "3D Artist": img("game"),
+  "Motion Designer": img("video"),
+  "Figma Designer": img("ux"),
+  "Frontend Developer": img("dev"),
+  "Backend Developer": img("backend"),
+  "Full Stack Developer": img("dev"),
+  "React Developer": img("dev"),
+  "Node.js Developer": img("backend"),
+  "Python Developer": img("data"),
+  "Mobile Developer": img("mobile"),
+  "Game Developer": img("game"),
+  "Software Engineer": img("dev"),
+  "DevOps Engineer": img("backend"),
+  "Cloud Engineer": img("backend"),
+  "AI Engineer": img("ai"),
+  "Machine Learning Engineer": img("ai"),
+  "Data Scientist": img("data"),
+  "Data Analyst": img("data"),
+  "Prompt Engineer": img("ai"),
+  Copywriter: img("write"),
+  "Content Creator": img("photo"),
+  "Technical Writer": img("write"),
+  Translator: img("write"),
+  "Marketing Specialist": img("marketing"),
+  "SEO Specialist": img("marketing"),
+  "Social Media Manager": img("marketing"),
+  "Brand Strategist": img("marketing"),
+  "Video Editor": img("video"),
+  Photographer: img("photo"),
+  "Music Producer": img("music"),
+  "Podcast Editor": img("music"),
+  "Project Manager": img("office"),
+  "Product Manager": img("office"),
+  "Business Consultant": img("office"),
+  "Virtual Assistant": img("office"),
+  Architect: img("arch"),
+  "Interior Designer": img("arch"),
+  Tutor: img("edu"),
+  "Course Creator": img("edu"),
+  Nutritionist: img("health"),
+  "Personal Trainer": img("health"),
+  "E-commerce Manager": img("fashion"),
+  "Fashion Designer": img("fashion"),
+  "Jewelry Designer": img("fashion"),
+  "Travel Planner": img("travel"),
+  Consultant: img("office"),
+};
+
+export function coverForTitle(title) {
+  return BY_TITLE[title] || img("design");
+}

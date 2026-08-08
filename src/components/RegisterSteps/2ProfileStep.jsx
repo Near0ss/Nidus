@@ -71,10 +71,6 @@ function ProfileStep({
 
   return (
     <div className="step-card">
-      <div className="step-icon">
-        ✦
-      </div>
-
       <h1>Seu perfil</h1>
 
       <p>
@@ -129,6 +125,9 @@ function ProfileStep({
             ))
           )}
         </div>
+        {!titleValid ? (
+          <span className="field-hint">Escolha pelo menos 1 profissão ao lado</span>
+        ) : null}
 
         <textarea
           className={
@@ -143,6 +142,13 @@ function ProfileStep({
             )
           }
         />
+        {!bioValid ? (
+          <span className="field-hint">
+            {data.bio.trim().length
+              ? `Faltam ${Math.max(30 - data.bio.trim().length, 0)} caracteres na bio`
+              : "A bio precisa ter pelo menos 30 caracteres"}
+          </span>
+        ) : null}
 
         <div className="location-row">
 

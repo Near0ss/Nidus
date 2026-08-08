@@ -1,69 +1,120 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronDown, Plus } from "lucide-react";
 import "../css/FilterSection.css";
 
-const categories = [
-  "Design de logotipo",
-  "Serviços de identidade visual",
-  "Design para redes sociais",
-  "Web design",
-  "Ilustrações",
-  "Design de embalagem",
-  "Design de papelaria",
-  "Design de pôster",
-  "Design de identidade",
-  "Diretrizes da marca",
-  "Design de aplicativos",
-  "UI/UX",
-  "Landing Pages",
-  "Ícones",
-  "Retratos",
-  "Quadrinhos",
-  "Personagens",
-  "Ilustração 3D"
+const CATEGORY_GROUPS = [
+  {
+    label: "Popular",
+    items: [
+      "Design de logotipo",
+      "Serviços de identidade visual",
+      "Design para redes sociais",
+      "Web design",
+      "Ilustrações",
+      "Design de embalagem",
+    ],
+  },
+  {
+    label: "Design gráfico",
+    items: [
+      "Design de papelaria",
+      "Design de pôster",
+      "Design de identidade",
+      "Diretrizes da marca",
+    ],
+  },
+  {
+    label: "Web e apps",
+    items: ["Design de aplicativos", "UI/UX", "Landing Pages", "Ícones"],
+  },
+  {
+    label: "Ilustração",
+    items: ["Retratos", "Quadrinhos", "Personagens", "Ilustração 3D"],
+  },
 ];
 
-const tools = [
-  "React",
-  "Node.js",
-  "Photoshop",
-  "Premiere",
-  "Figma",
-  "Illustrator"
+const TOOL_GROUPS = [
+  {
+    label: "Popular",
+    items: ["Figma", "Photoshop", "Illustrator", "React", "Node.js", "Premiere"],
+  },
+  {
+    label: "Mais usadas",
+    items: ["After Effects", "Blender", "Canva", "InDesign", "Sketch", "Framer"],
+  },
 ];
 
-const countries = ["Brasil", "Portugal"];
+const COUNTRIES = ["Brasil", "Portugal"];
+
+function FilterAccordion({ title, open, onToggle, count = 0, children }) {
+  return (
+    <section className="filter-section">
+      <button
+        type="button"
+        className="filter-title"
+        aria-expanded={open}
+        onClick={onToggle}
+      >
+        <span className="filter-title__row">
+          {title}
+          {count > 0 && <span className="filter-count">{count}</span>}
+        </span>
+        <ChevronDown size={16} strokeWidth={2.2} className={`filter-chevron ${open ? "open" : ""}`} />
+      </button>
+      <div className={`filter-body ${open ? "show" : ""}`}>
+        <div className="filter-body__inner">{children}</div>
+      </div>
+    </section>
+  );
+}
+
+function Chip({ active, onClick, children }) {
+  return (
+    <button
+      type="button"
+      className={`filter-chip ${active ? "active" : ""}`}
+      aria-pressed={active}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
 
 function FilterSection({ onFilterChange }) {
-  const [categoriasOpen, setCategoriasOpen] = useState(false);
+  const navigate = useNavigate();
+  const [categoriasOpen, setCategoriasOpen] = useState(true);
+  const [localizacaoOpen, setLocalizacaoOpen] = useState(true);
+  const [ferramentasOpen, setFerramentasOpen] = useState(true);
   const [showAllCategories, setShowAllCategories] = useState(false);
-  const [localizacaoOpen, setLocalizacaoOpen] = useState(false);
-  const [ferramentasOpen, setFerramentasOpen] = useState(false);
+  const [showAllTools, setShowAllTools] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedTools, setSelectedTools] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [city, setCity] = useState("");
+  const [debouncedCity, setDebouncedCity] = useState("");
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedCity(city.trim()), 350);
+    return () => window.clearTimeout(timer);
+  }, [city]);
 
   useEffect(() => {
     onFilterChange?.({
       categories: selectedCategories,
       country: selectedCountry,
-      city,
-      tools: selectedTools
+      city: debouncedCity,
+      tools: selectedTools,
     });
-  }, [selectedCategories, selectedCountry, city, selectedTools, onFilterChange]);
+  }, [selectedCategories, selectedCountry, debouncedCity, selectedTools, onFilterChange]);
 
-  function toggleCategory(category) {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((item) => item !== category)
-        : [...prev, category]
-    );
+  function toggleValue(setter, value) {
+    setter((prev) => (prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]));
   }
 
-  function toggleTool(tool) {
-    setSelectedTools((prev) =>
-      prev.includes(tool) ? prev.filter((item) => item !== tool) : [...prev, tool]
-    );
+  function chooseCountry(country) {
+    setSelectedCountry((prev) => (prev === country ? "" : country));
   }
 
   function resetFilters() {
@@ -73,163 +124,121 @@ function FilterSection({ onFilterChange }) {
     setCity("");
   }
 
+  const hasFilters =
+    selectedCategories.length > 0 || selectedTools.length > 0 || selectedCountry || city.trim();
+
+  const visibleCategories = showAllCategories ? CATEGORY_GROUPS : CATEGORY_GROUPS.slice(0, 1);
+  const visibleTools = showAllTools ? TOOL_GROUPS : TOOL_GROUPS.slice(0, 1);
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
         <h3>Filtros</h3>
-        <button type="button" onClick={resetFilters}>
+        <button type="button" onClick={resetFilters} disabled={!hasFilters}>
           Limpar
         </button>
       </div>
 
-      <button className="new-project" type="button">
-        <span>Novo Projeto</span>
+      <button className="new-project" type="button" onClick={() => navigate("/perfil")}>
+        <Plus size={16} strokeWidth={2.4} aria-hidden="true" />
+        Novo projeto
       </button>
 
-      {/* CATEGORIAS */}
-      <div className="filter-section">
-        <div
-          className="filter-title"
-          onClick={() => setCategoriasOpen(!categoriasOpen)}
-        >
-          <span>Categorias</span>
-          <span className={`arrow ${categoriasOpen ? "open" : ""}`}>▼</span>
-        </div>
-
-        <div className={`filter-body ${categoriasOpen ? "show" : ""}`}>
-          <div className="filter-content">
-            <div className="category-group">
-              <span className="category-title">Popular</span>
-              {categories.slice(0, 6).map((item) => (
-                <button
+      <FilterAccordion
+        title="Categorias"
+        open={categoriasOpen}
+        onToggle={() => setCategoriasOpen((open) => !open)}
+        count={selectedCategories.length}
+      >
+        {visibleCategories.map((group) => (
+          <div key={group.label} className="filter-group">
+            <span className="filter-label">{group.label}</span>
+            <div className="filter-chips">
+              {group.items.map((item) => (
+                <Chip
                   key={item}
-                  type="button"
-                  className={`category-item ${selectedCategories.includes(item) ? "active" : ""}`}
-                  onClick={() => toggleCategory(item)}
+                  active={selectedCategories.includes(item)}
+                  onClick={() => toggleValue(setSelectedCategories, item)}
                 >
-                  • {item}
-                </button>
+                  {item}
+                </Chip>
               ))}
             </div>
-
-            <div className={`extra-categories ${showAllCategories ? "show" : ""}`}>
-              <div className="category-group">
-                <span className="category-title">Design gráfico</span>
-                {categories.slice(6, 10).map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    className={`category-item ${selectedCategories.includes(item) ? "active" : ""}`}
-                    onClick={() => toggleCategory(item)}
-                  >
-                    • {item}
-                  </button>
-                ))}
-              </div>
-
-              <div className="category-group">
-                <span className="category-title">Web e Apps</span>
-                {categories.slice(10, 14).map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    className={`category-item ${selectedCategories.includes(item) ? "active" : ""}`}
-                    onClick={() => toggleCategory(item)}
-                  >
-                    • {item}
-                  </button>
-                ))}
-              </div>
-
-              <div className="category-group">
-                <span className="category-title">Ilustração</span>
-                {categories.slice(14).map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    className={`category-item ${selectedCategories.includes(item) ? "active" : ""}`}
-                    onClick={() => toggleCategory(item)}
-                  >
-                    • {item}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <button
-              className="more-categories"
-              type="button"
-              onClick={() => setShowAllCategories(!showAllCategories)}
-            >
-              {showAllCategories ? "▲ Menos categorias" : "▼ Mais categorias"}
-            </button>
           </div>
-        </div>
-      </div>
+        ))}
 
-      {/* LOCALIZAÇÃO */}
-      <div className="filter-section">
-        <div
-          className="filter-title"
-          onClick={() => setLocalizacaoOpen(!localizacaoOpen)}
+        <button
+          className="filter-more"
+          type="button"
+          onClick={() => setShowAllCategories((open) => !open)}
         >
-          <span>Localização</span>
-          <span className={`arrow ${localizacaoOpen ? "open" : ""}`}>▼</span>
-        </div>
+          {showAllCategories ? "Menos categorias" : "Mais categorias"}
+        </button>
+      </FilterAccordion>
 
-        <div className={`filter-body location-body ${localizacaoOpen ? "show" : ""}`}>
-          <div className="location-content">
-            <select
-              value={selectedCountry}
-              onChange={(event) => setSelectedCountry(event.target.value)}
-            >
-              <option value="">País</option>
-              {countries.map((country) => (
-                <option key={country} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="text"
-              value={city}
-              onChange={(event) => setCity(event.target.value)}
-              placeholder="Cidade"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* FERRAMENTAS */}
-      <div className="filter-section">
-        <div
-          className="filter-title"
-          onClick={() => setFerramentasOpen(!ferramentasOpen)}
-        >
-          <span>Ferramentas</span>
-          <span className={`arrow ${ferramentasOpen ? "open" : ""}`}>▼</span>
-        </div>
-
-        <div className={`filter-body ${ferramentasOpen ? "show" : ""}`}>
-          <div className="popular-tools">
-            {tools.map((tool) => (
-              <button
-                key={tool}
-                type="button"
-                className={`tool-item ${selectedTools.includes(tool) ? "active" : ""}`}
-                onClick={() => toggleTool(tool)}
+      <FilterAccordion
+        title="Localização"
+        open={localizacaoOpen}
+        onToggle={() => setLocalizacaoOpen((open) => !open)}
+        count={(selectedCountry ? 1 : 0) + (city.trim() ? 1 : 0)}
+      >
+        <div className="filter-group">
+          <span className="filter-label">País</span>
+          <div className="filter-chips">
+            {COUNTRIES.map((country) => (
+              <Chip
+                key={country}
+                active={selectedCountry === country}
+                onClick={() => chooseCountry(country)}
               >
-                {tool}
-              </button>
+                {country}
+              </Chip>
             ))}
-
-            <button className="view-all-tools" type="button">
-              Ver todas as ferramentas
-            </button>
           </div>
         </div>
-      </div>
+
+        <label className="filter-group">
+          <span className="filter-label">Cidade</span>
+          <input
+            type="text"
+            value={city}
+            onChange={(event) => setCity(event.target.value)}
+            placeholder="Ex.: São Paulo"
+          />
+        </label>
+      </FilterAccordion>
+
+      <FilterAccordion
+        title="Ferramentas"
+        open={ferramentasOpen}
+        onToggle={() => setFerramentasOpen((open) => !open)}
+        count={selectedTools.length}
+      >
+        {visibleTools.map((group) => (
+          <div key={group.label} className="filter-group">
+            <span className="filter-label">{group.label}</span>
+            <div className="filter-chips">
+              {group.items.map((item) => (
+                <Chip
+                  key={item}
+                  active={selectedTools.includes(item)}
+                  onClick={() => toggleValue(setSelectedTools, item)}
+                >
+                  {item}
+                </Chip>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <button
+          className="filter-more"
+          type="button"
+          onClick={() => setShowAllTools((open) => !open)}
+        >
+          {showAllTools ? "Menos ferramentas" : "Mais ferramentas"}
+        </button>
+      </FilterAccordion>
     </aside>
   );
 }

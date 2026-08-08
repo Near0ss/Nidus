@@ -1,0 +1,27 @@
+{
+  "name": "Nidus",
+  "short_name": "Nidus",
+  "description": "Sua carreira, em um único ninho. Portfólio, clientes e gestão para freelancers e contratantes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f2f0",
+  "theme_color": "#171313",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "437x437"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "437x437"
+    }
+  ]
+}

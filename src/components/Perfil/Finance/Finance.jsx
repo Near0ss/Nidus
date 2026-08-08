@@ -1,68 +1,34 @@
-import { DollarSign, CreditCard, TrendingDown, ArrowUpRight, Wallet } from "lucide-react";
-
 export default function Finance({ user }) {
-  const totalEarned = user?.earnings || "3.450,00";
-  const balance = user?.balance || "1.280,00";
-  const revenue = user?.revenue || "7.840,00";
-  const fees = user?.fees || "340,00";
+  const balance = Number(user?.finance?.balance ?? user?.balance ?? 0);
+  const earnings = Number(user?.finance?.earnings ?? user?.earnings ?? 0);
+  const hasMoney = balance > 0 || earnings > 0;
 
   return (
-    <section className="perfil-section perfil-finance">
+    <section className="perfil-section perfil-finance u-rise">
       <div className="section-heading">
         <div>
           <h2>Finanças</h2>
-          <p>Controle os ganhos, pagamentos e metas do seu perfil profissional.</p>
+          <p>Ganhos e pagamentos reais do seu ninho — sem números inventados.</p>
         </div>
       </div>
 
-      <div className="finance-grid">
-        <div className="finance-card">
-          <div className="finance-icon"><DollarSign size={20} /></div>
-          <span>Saldo disponível</span>
-          <strong>R$ {balance}</strong>
-        </div>
-        <div className="finance-card">
-          <div className="finance-icon"><CreditCard size={20} /></div>
-          <span>Recebimentos</span>
-          <strong>R$ {totalEarned}</strong>
-        </div>
-        <div className="finance-card">
-          <div className="finance-icon"><Wallet size={20} /></div>
-          <span>Faturamento</span>
-          <strong>R$ {revenue}</strong>
-        </div>
-        <div className="finance-card">
-          <div className="finance-icon"><TrendingDown size={20} /></div>
-          <span>Taxas</span>
-          <strong>R$ {fees}</strong>
-        </div>
-      </div>
-
-      <div className="finance-details">
-        <div className="finance-detail-card">
-          <h3>Resumo mensal</h3>
-          <p>Os próximos 30 dias mostram oportunidades de crescimento e faturamento constante.</p>
-          <div className="finance-progress">
-            <span>Meta</span>
-            <strong>R$ 12.000</strong>
+      {hasMoney ? (
+        <div className="finance-grid">
+          <div className="finance-card">
+            <span>Saldo disponível</span>
+            <strong>R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
           </div>
-          <div className="finance-progress-bar">
-            <div style={{ width: "68%" }} />
+          <div className="finance-card">
+            <span>Ganhos totais</span>
+            <strong>R$ {earnings.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
           </div>
         </div>
-        <div className="finance-detail-card">
-          <h3>Transações recentes</h3>
-          <ul>
-            <li>Consultoria UX - R$ 1.200</li>
-            <li>Branding Studio - R$ 850</li>
-            <li>Landing page - R$ 560</li>
-            <li>Revisão de portfólio - R$ 290</li>
-          </ul>
-          <button className="btn-secondary outline">
-            <ArrowUpRight size={16} /> Ver todas as entradas
-          </button>
+      ) : (
+        <div className="nidus-empty">
+          <strong>Ainda sem movimentação</strong>
+          <p>Quando um cliente pagar um serviço, o saldo aparece aqui.</p>
         </div>
-      </div>
+      )}
     </section>
   );
 }

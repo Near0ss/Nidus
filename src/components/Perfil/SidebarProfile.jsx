@@ -1,160 +1,85 @@
-import {
-  Star,
-  FolderOpen,
-  CircleCheck,
-  Pencil,
-  Wallet,
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Wallet, MapPin, Bookmark } from "lucide-react";
 
-export default function SidebarProfile({
-  user,
-  setTab,
-  openEditModal,
-}) {
+export default function SidebarProfile({ user, setTab }) {
+  const navigate = useNavigate();
+  const isFreelancer = user?.type === "freelancer";
+  const savedCount = Array.isArray(user?.savedIds) ? user.savedIds.length : 0;
+
   return (
     <aside className="perfil-sidebar">
-
-      <div className="perfil-card">
-
-        <button
-          className="perfil-main-button"
-          onClick={openEditModal}
-        >
-          <Pencil size={18} />
-          Editar perfil
-        </button>
-        <button
-          className="perfil-secondary-button"
-          onClick={() => setTab("social")}
-        >
-          Sociais
-        </button>
-
+      <div className="sidebar-header">
+        <h3>Atalhos</h3>
       </div>
 
-      {user?.type === "freelancer" ? (
+      {isFreelancer ? (
+        <button type="button" className="new-project" onClick={() => setTab("services")}>
+          Novo serviço
+        </button>
+      ) : (
+        <button type="button" className="new-project" onClick={() => navigate("/home")}>
+          Explorar freelancers
+        </button>
+      )}
+
+      <button type="button" className="perfil-ghost-link" onClick={() => setTab("settings")}>
+        Configurações
+      </button>
+      <button type="button" className="perfil-ghost-link" onClick={() => setTab("social")}>
+        Redes sociais
+      </button>
+
+      {isFreelancer ? (
         <>
-          <div className="perfil-card">
+          <div className="perfil-card-divider" />
+          <h4>Disponibilidade</h4>
+          <p>Ative para aparecer nas buscas e receber novos clientes.</p>
+          <button type="button" className="perfil-outline-button">
+            Ativar disponibilidade
+          </button>
+        </>
+      ) : user?.bio ? (
+        <p className="perfil-bio-preview">{user.bio}</p>
+      ) : null}
 
-            <h4>Disponibilidade</h4>
+      <div className="perfil-card-divider" />
 
-            <p>
-              Ative sua disponibilidade para
-              aparecer nas buscas e receber
-              novos clientes.
-            </p>
-
-            <button className="perfil-outline-button">
-              Ativar disponibilidade
-            </button>
-
+      {isFreelancer ? (
+        <>
+          <div className="perfil-info-item">
+            <Wallet size={16} />
+            <span>Projetos</span>
+            <strong>{user?.projects?.length || 0}</strong>
           </div>
-
-          <div className="perfil-card">
-
-            <h4>Experiência</h4>
-
-            <p>
-              Adicione experiências e projetos
-              para fortalecer seu perfil.
-            </p>
-
-            <button
-              className="perfil-link-button"
-              onClick={() => setTab("services")}
-            >
-              Adicionar experiência
-            </button>
-
+          <div className="perfil-info-item">
+            <Wallet size={16} />
+            <span>Saldo</span>
+            <strong>R$ 0,00</strong>
           </div>
         </>
       ) : (
-        <div className="perfil-card">
-
-          <h4>Explore profissionais</h4>
-
-          <p>
-            Encontre os melhores freelancers
-            para o seu próximo projeto.
-          </p>
-
-          <button
-            className="perfil-link-button"
-            onClick={() => setTab("dashboard")}
-          >
-            Ver recomendações
-          </button>
-
-        </div>
+        <>
+          <div className="perfil-info-item">
+            <Bookmark size={16} />
+            <span>Salvos</span>
+            <strong>{savedCount}</strong>
+          </div>
+          <div className="perfil-info-item">
+            <MapPin size={16} />
+            <span>Local</span>
+            <strong>{user?.country || "—"}</strong>
+          </div>
+        </>
       )}
 
-      <div className="perfil-card">
-
-        <div className="perfil-info-item">
-
-          <FolderOpen size={17} />
-
-          <span>Projetos</span>
-
-          <strong>
-            {user?.projects?.length || 0}
-          </strong>
-
-        </div>
-
-        <div className="perfil-info-item">
-
-          <Star size={17} />
-
-          <span>Avaliação</span>
-
-          <strong>
-            {user?.rating || "4.9"}
-          </strong>
-
-        </div>
-
-        <div className="perfil-info-item">
-
-          <Wallet size={17} />
-
-          <span>Saldo</span>
-
-          <strong>
-            R$ {user?.balance || "0,00"}
-          </strong>
-
-        </div>
-
-        <div className="perfil-info-item">
-
-          <CircleCheck size={17} />
-
-          <span>Status</span>
-
-          <strong>Ativo</strong>
-
-        </div>
-
-      </div>
-
-
       <div className="perfil-member">
-
-        <span>
-          MEMBRO DESDE
-        </span>
-
+        <span>Membro desde</span>
         <strong>
           {user?.createdAt
-            ? new Date(
-                user.createdAt
-              ).toLocaleDateString("pt-BR")
-            : "2026"}
+            ? new Date(user.createdAt).toLocaleDateString("pt-BR")
+            : "—"}
         </strong>
-
       </div>
-
     </aside>
   );
 }
