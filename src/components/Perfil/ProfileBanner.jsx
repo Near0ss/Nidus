@@ -6,7 +6,8 @@ import {
   X,
   ImagePlus,
 } from "lucide-react";
-import { apiFetch } from "../../lib/api";
+import { apiFetch, uploadFiles } from "../../lib/api";
+import UserAvatar from "../ui/UserAvatar";
 
 export default function ProfileBanner({
   user,
@@ -39,48 +40,33 @@ export default function ProfileBanner({
       return;
     }
 
-    const reader = new FileReader();
+    try {
+      const uploaded = await uploadFiles([file]);
+      const url = uploaded.url || uploaded.urls?.[0];
+      if (!url) throw new Error("Upload sem URL");
+      const payload =
+        uploadMode === "photo"
+          ? { profilePhoto: url }
+          : { banner: url };
 
-    reader.onload = async () => {
-      const data = reader.result;
+      const data = await apiFetch(`/api/users/${user.id}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      });
 
-      try {
-        const payload =
-          uploadMode === "photo"
-            ? { profilePhoto: data }
-            : { banner: data };
-
-        await apiFetch(`/api/users/${user.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (uploadMode === "photo") {
-          setProfilePhoto(data);
-        } else {
-          setBanner(data);
-        }
-
-        updateUser(payload);
-        setUploadError("");
-        setShowModal(false);
-      } catch {
-        setUploadError(
-          uploadMode === "photo"
-            ? "Erro ao enviar foto de perfil."
-            : "Erro ao enviar banner."
-        );
-      }
-    };
-
-    reader.readAsDataURL(file);
+      if (uploadMode === "photo") setProfilePhoto(url);
+      else setBanner(url);
+      updateUser(data.user || payload);
+      setUploadError("");
+      setShowModal(false);
+    } catch {
+      setUploadError(
+        uploadMode === "photo"
+          ? "Erro ao enviar foto de perfil."
+          : "Erro ao enviar banner."
+      );
+    }
   }
-
-  const initials =
-    (user?.username || user?.name)?.charAt(0).toUpperCase() || "N";
 
   const displayName =
     user?.type === "normal"
@@ -122,11 +108,11 @@ export default function ProfileBanner({
           }}
           aria-label="Alterar foto de perfil"
         >
-          {profilePhoto ? (
-            <img src={profilePhoto} alt="" />
-          ) : (
-            <span>{initials}</span>
-          )}
+          <UserAvatar
+            src={profilePhoto}
+            name={displayName}
+            size={88}
+          />
         </button>
 
         <div className="home-hero__copy">

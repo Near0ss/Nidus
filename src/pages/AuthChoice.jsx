@@ -1,12 +1,9 @@
-import { useState } from "react";
 import Footer from "../components/Footer";
-import Login from "../components/Login";
 import { useNavigate } from "react-router-dom";
 import logoText from "../assets/logotext.png";
 import "../css/AuthChoice.css";
 
 function AuthChoice() {
-  const [showLogin, setShowLogin] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -14,20 +11,22 @@ function AuthChoice() {
       <div className="auth-bg" aria-hidden="true" />
 
       <main className="auth-page">
+        <p className="auth-kicker">Entrar no Nidus</p>
+        <p className="auth-question">Como você usa o Nidus?</p>
         <div className="auth-container">
           <img src={logoText} alt="Nidus" className="auth-nidus" />
 
           <button
             type="button"
             className="auth-side user-side"
-            onClick={() => navigate("/registeru")}
+            onClick={() => navigate("/login/cliente")}
           >
             <div className="auth-content">
-              <h1 className="auth-title">Usuário</h1>
+              <h1 className="auth-title">Cliente</h1>
               <div className="auth-features">
-                <p>Descubra portfólios</p>
-                <p>Contrate</p>
-                <p>Salve profissionais</p>
+                <p>Encontre profissionais</p>
+                <p>Contrate serviços</p>
+                <p>Acompanhe trabalhos</p>
                 <p>Conecte-se</p>
               </div>
             </div>
@@ -36,32 +35,26 @@ function AuthChoice() {
           <button
             type="button"
             className="auth-side freelancer-side"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/login/freelancer")}
           >
             <div className="auth-content right">
               <h1 className="auth-title">Freelancer</h1>
               <div className="auth-features">
-                <p>Crie seu negócio</p>
-                <p>Cresça</p>
-                <p>Divulgue</p>
-                <p>Organize</p>
+                <p>Divulgue seus serviços</p>
+                <p>Gerencie sua carreira</p>
+                <p>Converse com clientes</p>
+                <p>Acompanhe resultados</p>
               </div>
             </div>
           </button>
         </div>
 
-        <button
-          type="button"
-          className="already-account"
-          onClick={() => setShowLogin(true)}
-        >
-          Já tem uma conta? <span>Entrar</span>
-        </button>
+        <p className="already-account auth-footnote">
+          Ainda não tem conta? Escolha o tipo acima e depois crie a sua.
+        </p>
       </main>
 
       <Footer />
-
-      {showLogin && <Login onClose={() => setShowLogin(false)} />}
     </div>
   );
 }

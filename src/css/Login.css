@@ -161,7 +161,67 @@
   color: #111;
   text-align: center;
 
-  margin-bottom: 28px;
+  margin-bottom: 12px;
+}
+
+.login-lead {
+  text-align: center;
+  color: #5c5757;
+  margin: 0 0 1.35rem;
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.login-page-shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: var(--color-paper, #f5f2f0);
+}
+
+.login-card-page {
+  animation: none;
+}
+
+.login-back {
+  color: #6b6260;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-back:hover {
+  color: #171313;
+}
+
+.login-button.ghost {
+  margin-top: 0.75rem;
+  background: #fff;
+  color: #171313;
+  border: 1px solid #e5e5e5;
+  box-shadow: none;
+}
+
+.login-button.ghost:hover {
+  box-shadow: 0 10px 22px rgba(23, 19, 19, 0.08);
+}
+
+.login-alt {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.15rem;
+  text-align: center;
+  font-size: 0.94rem;
+}
+
+.login-alt a {
+  color: #171313;
+  font-weight: 600;
+}
+
+.login-switch {
+  color: #6b6260 !important;
+  font-weight: 500 !important;
 }
 
 .login-label {

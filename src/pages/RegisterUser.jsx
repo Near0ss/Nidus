@@ -45,6 +45,7 @@ function RegisterUser() {
   const [success, setSuccess] = useState(null);
   const [checking, setChecking] = useState(false);
   const [emailTaken, setEmailTaken] = useState("");
+  const [usernameTaken, setUsernameTaken] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPasswordInfo, setShowPasswordInfo] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -53,6 +54,7 @@ function RegisterUser() {
 
   const [form, setForm] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
     country: "",
@@ -75,8 +77,9 @@ function RegisterUser() {
   const passwordValid = score >= 3;
   const passwordMatch = confirmPassword.length > 0 && password === confirmPassword;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+  const usernameValid = /^[a-zA-Z0-9._]{3,24}$/.test(form.username.trim());
   const nameValid = form.name.trim().length >= 2;
-  const step1Valid = nameValid && emailValid && passwordValid && passwordMatch && !emailTaken;
+  const step1Valid = nameValid && usernameValid && emailValid && passwordValid && passwordMatch && !emailTaken && !usernameTaken;
   const countryValid = form.country.length > 0;
   const stateValid = form.state.trim().length >= 2;
   const step2Valid = countryValid && stateValid;
@@ -107,13 +110,18 @@ function RegisterUser() {
 
     try {
       const result = await apiFetch(
-        `/api/register/check?email=${encodeURIComponent(form.email.trim())}`,
+        `/api/register/check?email=${encodeURIComponent(form.email.trim())}&username=${encodeURIComponent(form.username.trim())}`,
       );
       if (result.emailTaken) {
         setEmailTaken("Este e-mail já está cadastrado.");
         return;
       }
+      if (result.usernameTaken) {
+        setUsernameTaken("Este username já está em uso.");
+        return;
+      }
       setEmailTaken("");
+      setUsernameTaken("");
       setStep(2);
     } catch (err) {
       setError(err.message || "Não foi possível verificar o e-mail.");
@@ -141,7 +149,7 @@ function RegisterUser() {
 
       setSuccess("Conta criada com sucesso!");
       login(data.user, data.token);
-      navigate("/perfil");
+      navigate("/home");
     } catch (err) {
       setError(err.message || "Erro desconhecido");
     } finally {
@@ -171,8 +179,8 @@ function RegisterUser() {
                   <img src={logoText} alt="Nidus" className="step-brand__wordmark" />
                 </div>
 
-                <h1>Crie sua conta</h1>
-                <p>Comece a explorar perfis e contratar freelancers.</p>
+                <h1>Criar conta de cliente</h1>
+                <p>Encontre profissionais e acompanhe seus projetos.</p>
 
                 <div className="step-fields">
                   <input
@@ -183,6 +191,30 @@ function RegisterUser() {
                     onChange={(e) => updateField("name", e.target.value)}
                     autoComplete="name"
                   />
+
+                  <input
+                    className={usernameValid && !usernameTaken ? "valid-input" : ""}
+                    type="text"
+                    placeholder="Username"
+                    value={form.username}
+                    onChange={(e) => {
+                      updateField("username", e.target.value.replace(/\s/g, ""));
+                      setUsernameTaken("");
+                    }}
+                    onBlur={async () => {
+                      if (!usernameValid) return;
+                      try {
+                        const result = await apiFetch(
+                          `/api/register/check?username=${encodeURIComponent(form.username.trim())}`,
+                        );
+                        setUsernameTaken(result.usernameTaken ? "Este username já está em uso." : "");
+                      } catch {
+                        /* ignore preview check */
+                      }
+                    }}
+                    autoComplete="username"
+                  />
+                  {usernameTaken ? <span className="field-error">{usernameTaken}</span> : null}
 
                   <input
                     className={emailValid && !emailTaken ? "valid-input" : ""}
@@ -387,7 +419,7 @@ function RegisterUser() {
         </section>
       </div>
 
-      {showLogin && <Login onClose={() => setShowLogin(false)} />}
+      {showLogin && <Login onClose={() => setShowLogin(false)} intendedRole="CLIENT" />}
     </main>
   );
 }

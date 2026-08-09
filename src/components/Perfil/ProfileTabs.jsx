@@ -9,7 +9,7 @@ export default function ProfileTabs({ tab, setTab, user }) {
           { id: 'statistics', label: 'Estatísticas' },
         ]
       : []),
-    { id: 'social', label: 'Social' },
+    { id: 'social', label: 'Redes' },
     { id: 'settings', label: 'Configurações' },
   ];
 

@@ -32,14 +32,14 @@ export default function Services({ user }) {
           <div className="highlight-icon"><Eye size={20} /></div>
           <div>
             <span>Visualizações</span>
-            <strong>{user?.views || 1240}</strong>
+            <strong>{user?.views || user?.statistics?.views || 0}</strong>
           </div>
         </div>
         <div className="service-highlight-card">
           <div className="highlight-icon"><Star size={20} /></div>
           <div>
             <span>Avaliação média</span>
-            <strong>{user?.rating || 4.9}</strong>
+            <strong>{user?.rating || '—'}</strong>
           </div>
         </div>
       </div>

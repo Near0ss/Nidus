@@ -1,0 +1,466 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  FREELANCER
+  CLIENT
+}
+
+enum Availability {
+  AVAILABLE
+  BUSY
+  UNAVAILABLE
+}
+
+enum ServiceStatus {
+  ACTIVE
+  PAUSED
+  DRAFT
+  ARCHIVED
+}
+
+enum PriceType {
+  FIXED
+  STARTING_AT
+  NEGOTIABLE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum ContractKind {
+  HIRE
+  QUOTE
+}
+
+enum ContractStatus {
+  REQUESTED
+  ACCEPTED
+  REJECTED
+  IN_PROGRESS
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+enum TransactionType {
+  EARNING
+  PENDING
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  FOLLOW
+  COMMENT
+  LIKE
+  MESSAGE
+  JOB_REQUEST
+  JOB_ACCEPTED
+  JOB_REJECTED
+  JOB_DELIVERED
+  JOB_COMPLETED
+  REVIEW
+}
+
+model User {
+  id           String   @id @default(uuid())
+  role         Role
+  name         String
+  username     String   @unique
+  email        String   @unique
+  passwordHash String?
+  provider     String   @default("local")
+  googleId     String?  @unique
+  avatarUrl    String   @default("")
+  bannerUrl    String   @default("")
+  bio          String   @default("")
+  country      String   @default("")
+  state        String   @default("")
+  city         String   @default("")
+  website      String   @default("")
+  phone        String   @default("")
+  company      String   @default("")
+  hiringFocus  String   @default("")
+  socialLinks  String   @default("{}")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  freelancerProfile FreelancerProfile?
+
+  servicesOwned   Service[]             @relation("FreelancerServices")
+  portfolio       PortfolioProject[]
+  posts           Post[]
+  comments        Comment[]
+  postLikes       PostLike[]
+  savedPosts      SavedPost[]
+  savedServices   SavedService[]
+  savedFreelancers SavedFreelancer[]    @relation("SavedFreelancerOwner")
+  savedByUsers    SavedFreelancer[]     @relation("SavedFreelancerTarget")
+  follows         Follow[]              @relation("Follower")
+  followers       Follow[]              @relation("Following")
+  contractsAsClient     Contract[]      @relation("ContractClient")
+  contractsAsFreelancer Contract[]      @relation("ContractFreelancer")
+  reviewsGiven    Review[]              @relation("ReviewClient")
+  reviewsReceived Review[]              @relation("ReviewFreelancer")
+  conversations   ConversationParticipant[]
+  messagesSent    Message[]
+  notifications   Notification[]        @relation("NotificationUser")
+  notificationsActed Notification[]     @relation("NotificationActor")
+  transactions    Transaction[]
+  profileViews    ProfileView[]
+  serviceViews    ServiceView[]
+
+  @@index([role])
+  @@index([city, state])
+}
+
+model FreelancerProfile {
+  id            String       @id @default(uuid())
+  userId        String       @unique
+  businessName  String       @default("")
+  headline      String       @default("")
+  experience    String       @default("")
+  availability  Availability @default(AVAILABLE)
+  about         String       @default("")
+  initialPrice  Int?
+  country       String       @default("")
+  state         String       @default("")
+  city          String       @default("")
+  profileViews  Int          @default(0)
+  hireClicks    Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills FreelancerSkill[]
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  slug     String    @unique
+  name     String
+  skills   Skill[]
+  services Service[]
+}
+
+model Skill {
+  id         String            @id @default(uuid())
+  slug       String            @unique
+  name       String
+  categoryId String?
+  category   Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  freelancers FreelancerSkill[]
+}
+
+model FreelancerSkill {
+  freelancerId String
+  skillId      String
+  freelancer   FreelancerProfile @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  skill        Skill             @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([freelancerId, skillId])
+}
+
+model Service {
+  id           String        @id @default(uuid())
+  freelancerId String
+  title        String
+  slug         String        @unique
+  description  String        @default("")
+  includes     String        @default("")
+  categoryId   String?
+  subcategory  String        @default("")
+  priceType    PriceType     @default(FIXED)
+  price        Int?
+  deliveryDays Int?
+  status       ServiceStatus @default(ACTIVE)
+  views        Int           @default(0)
+  hireClicks   Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  freelancer User          @relation("FreelancerServices", fields: [freelancerId], references: [id], onDelete: Cascade)
+  category   Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  media      ServiceMedia[]
+  contracts  Contract[]
+  savedBy    SavedService[]
+  viewEvents ServiceView[]
+
+  @@index([freelancerId, status])
+  @@index([categoryId, status])
+  @@index([status, createdAt])
+}
+
+model ServiceMedia {
+  id        String    @id @default(uuid())
+  serviceId String
+  url       String
+  position  Int       @default(0)
+  type      MediaType @default(IMAGE)
+  service   Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId, position])
+}
+
+model PortfolioProject {
+  id           String   @id @default(uuid())
+  freelancerId String
+  title        String
+  description  String   @default("")
+  category     String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  freelancer User            @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  media      PortfolioMedia[]
+
+  @@index([freelancerId])
+}
+
+model PortfolioMedia {
+  id         String           @id @default(uuid())
+  projectId  String
+  url        String
+  position   Int              @default(0)
+  type       MediaType        @default(IMAGE)
+  project    PortfolioProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Contract {
+  id           String         @id @default(uuid())
+  clientId     String
+  freelancerId String
+  serviceId    String?
+  kind         ContractKind   @default(HIRE)
+  title        String
+  description  String         @default("")
+  budgetHint   Int?
+  price        Int?
+  deadline     DateTime?
+  status       ContractStatus @default(REQUESTED)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  acceptedAt   DateTime?
+  startedAt    DateTime?
+  deliveredAt  DateTime?
+  completedAt  DateTime?
+  cancelledAt  DateTime?
+
+  client     User          @relation("ContractClient", fields: [clientId], references: [id], onDelete: Cascade)
+  freelancer User          @relation("ContractFreelancer", fields: [freelancerId], references: [id], onDelete: Cascade)
+  service    Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  review     Review?
+  transactions Transaction[]
+  conversation Conversation?
+
+  @@index([freelancerId, status])
+  @@index([clientId, status])
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  authorId  String
+  content   String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author   User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  media    PostMedia[]
+  likes    PostLike[]
+  comments Comment[]
+  savedBy  SavedPost[]
+
+  @@index([authorId, createdAt])
+  @@index([createdAt])
+}
+
+model PostMedia {
+  id       String    @id @default(uuid())
+  postId   String
+  url      String
+  type     MediaType @default(IMAGE)
+  position Int       @default(0)
+  post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, position])
+}
+
+model PostLike {
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+}
+
+model SavedPost {
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+}
+
+model SavedService {
+  userId    String
+  serviceId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@id([userId, serviceId])
+}
+
+model SavedFreelancer {
+  userId       String
+  freelancerId String
+  createdAt    DateTime @default(now())
+  user         User     @relation("SavedFreelancerOwner", fields: [userId], references: [id], onDelete: Cascade)
+  freelancer   User     @relation("SavedFreelancerTarget", fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@id([userId, freelancerId])
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  follower    User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+}
+
+model Conversation {
+  id         String   @id @default(uuid())
+  contractId String?  @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  contract     Contract?                 @relation(fields: [contractId], references: [id], onDelete: SetNull)
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  conversationId String
+  userId         String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id             String    @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String
+  createdAt      DateTime  @default(now())
+  readAt         DateTime?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  actorId   String?
+  type      NotificationType
+  entityId  String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  user  User  @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
+  actor User? @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([userId, readAt])
+}
+
+model Transaction {
+  id          String            @id @default(uuid())
+  userId      String
+  contractId  String
+  type        TransactionType
+  amount      Int
+  status      TransactionStatus @default(PENDING)
+  description String            @default("")
+  createdAt   DateTime          @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+model Review {
+  id           String   @id @default(uuid())
+  contractId   String   @unique
+  clientId     String
+  freelancerId String
+  rating       Int
+  comment      String   @default("")
+  createdAt    DateTime @default(now())
+
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  client     User     @relation("ReviewClient", fields: [clientId], references: [id], onDelete: Cascade)
+  freelancer User     @relation("ReviewFreelancer", fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@index([freelancerId])
+}
+
+model ProfileView {
+  id        String   @id @default(uuid())
+  viewerId  String?
+  profileId String
+  createdAt DateTime @default(now())
+  viewer    User?    @relation(fields: [viewerId], references: [id], onDelete: SetNull)
+
+  @@index([profileId, createdAt])
+}
+
+model ServiceView {
+  id        String   @id @default(uuid())
+  viewerId  String?
+  serviceId String
+  createdAt DateTime @default(now())
+  viewer    User?    @relation(fields: [viewerId], references: [id], onDelete: SetNull)
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId, createdAt])
+}

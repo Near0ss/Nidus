@@ -1,16 +1,57 @@
-# React + Vite
+# Nidus
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Plataforma para freelancers divulgarem serviços, conversarem com clientes, acompanharem trabalhos e crescerem no mesmo lugar.
 
-Currently, two official plugins are available:
+## Rodar em desenvolvimento
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+cd backend
+cp .env.example .env
+npm install
+npx prisma migrate dev
+npm run db:seed
+npm run dev
 
-## React Compiler
+# em outro terminal, na raiz
+npm install
+npm run dev:front
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Ou, na raiz, depois do seed:
 
-## Expanding the Oxlint configuration
+```bash
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- Front: http://127.0.0.1:5173/
+- API: http://localhost:5000/
+
+## Contas demo
+
+| Perfil | E-mail | Senha |
+| --- | --- | --- |
+| Cliente | cliente@nidus.test | nidus123 |
+| Freelancer | freelancer@nidus.test | nidus123 |
+| Freelancer (seed) | marina@nidus.dev | nidus123 |
+| Cliente (seed) | bruno@nidus.dev | nidus123 |
+
+Contas migradas do JSON antigo: `Near`, `aaaaaaaa` (senha `20645566Yy*`) e Google `buchholz`.
+
+## Variáveis
+
+Ver `backend/.env.example`.
+
+- `JWT_SECRET` — obrigatório; em produção o servidor recusa o fallback de desenvolvimento
+- `DATABASE_URL` — SQLite local (`file:./dev.db`) ou PostgreSQL em produção
+- `CORS_ORIGIN` — origens permitidas
+- `GOOGLE_CLIENT_ID` / `VITE_GOOGLE_CLIENT_ID` — OAuth Google
+
+## Banco
+
+Prisma + SQLite em desenvolvimento. O schema é compatível com PostgreSQL: troque `provider` e `DATABASE_URL` quando o Postgres estiver disponível.
+
+## Scripts
+
+- `npm run lint` — Oxlint
+- `npm run build` — build do front
+- `npm test --prefix backend` — testes de regras da API (backend precisa estar no ar)

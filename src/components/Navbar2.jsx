@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Bell, Menu, MessageCircle, X } from 'lucide-react';
 import '../css/Navbar2.css';
+import '../css/nidus.css';
 import logo from '../assets/logotext.png';
 import { useAuth } from '../context/AuthContext';
+import UserAvatar from './ui/UserAvatar';
+import IconButton from './ui/IconButton';
 
 export default function Navbar2() {
-  const { user, logout } = useAuth();
+  const { user, logout, refresh } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
@@ -13,6 +17,7 @@ export default function Navbar2() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
+  const isFreelancer = user?.type === 'freelancer';
 
   useEffect(() => {
     setQuery(params.get('q') || '');
@@ -24,18 +29,19 @@ export default function Navbar2() {
   }, [location.pathname, location.search]);
 
   useEffect(() => {
+    if (!user) return undefined;
+    refresh();
+    return undefined;
+  }, [location.pathname]);
+
+  useEffect(() => {
     if (!profileOpen) return undefined;
-
     function onPointerDown(event) {
-      if (!profileRef.current?.contains(event.target)) {
-        setProfileOpen(false);
-      }
+      if (!profileRef.current?.contains(event.target)) setProfileOpen(false);
     }
-
     function onKeyDown(event) {
       if (event.key === 'Escape') setProfileOpen(false);
     }
-
     document.addEventListener('pointerdown', onPointerDown);
     document.addEventListener('keydown', onKeyDown);
     return () => {
@@ -45,19 +51,13 @@ export default function Navbar2() {
   }, [profileOpen]);
 
   function isActive(path) {
-    return location.pathname === path;
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
   }
 
   function handleSearch(event) {
     event.preventDefault();
     const q = query.trim();
-    const next = new URLSearchParams();
-    if (q) next.set('q', q);
-    if (location.pathname === '/home' && params.get('view')) {
-      next.set('view', params.get('view'));
-    }
-    const qs = next.toString();
-    navigate(qs ? `/home?${qs}` : '/home');
+    navigate(q ? `/home?q=${encodeURIComponent(q)}` : '/home');
     setMenuOpen(false);
   }
 
@@ -74,120 +74,100 @@ export default function Navbar2() {
           <Link to={user ? '/home' : '/landing'}>
             <img src={logo} alt="Nidus" className="navbar-navbar2-logo" />
           </Link>
-
-          <Link to="/perfil" data-label="Perfil" className={`navbar-nav-link ${isActive('/perfil') ? 'navbar-nav-link-active' : ''}`}>
-            Perfil
-          </Link>
-          <Link to="/home" data-label="Projetos" className={`navbar-nav-link ${isActive('/home') && !params.get('view') ? 'navbar-nav-link-active' : ''}`}>
-            Projetos
-          </Link>
-          <Link
-            to="/home?view=freelancers"
-            data-label="Freelancers"
-            className={`navbar-nav-link ${params.get('view') === 'freelancers' ? 'navbar-nav-link-active' : ''}`}
-          >
-            Freelancers
-          </Link>
-          {user?.type === 'normal' && (
-            <Link to="/salvos" data-label="Salvos" className={`navbar-nav-link ${isActive('/salvos') ? 'navbar-nav-link-active' : ''}`}>
-              Salvos
-            </Link>
-          )}
+          <Link to="/home" data-label="Início" className={`navbar-nav-link ${isActive('/home') ? 'navbar-nav-link-active' : ''}`}>Início</Link>
+          <Link to="/servicos" data-label="Serviços" className={`navbar-nav-link ${isActive('/servicos') ? 'navbar-nav-link-active' : ''}`}>Serviços</Link>
+          <Link to="/freelancers" data-label="Freelancers" className={`navbar-nav-link ${isActive('/freelancers') ? 'navbar-nav-link-active' : ''}`}>Freelancers</Link>
+          <Link to="/social" data-label="Social" className={`navbar-nav-link ${isActive('/social') ? 'navbar-nav-link-active' : ''}`}>Social</Link>
         </div>
 
         <form className="navbar-navbar2-center" onSubmit={handleSearch} role="search">
-          <label className="sr-only" htmlFor="nidus-search">
-            Pesquisar projetos e usuários
-          </label>
+          <label className="sr-only" htmlFor="nidus-search">Pesquisar serviços, freelancers e publicações</label>
           <input
             id="nidus-search"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Pesquisar projetos, usuários..."
+            placeholder="Buscar serviços, pessoas, posts…"
             className="navbar-navbar2-search"
           />
         </form>
 
         <div className="navbar-navbar2-right">
-          <button
-            type="button"
-            className="navbar-menu-toggle"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            {menuOpen ? 'Fechar' : 'Menu'}
+          <button type="button" className="navbar-menu-toggle" aria-expanded={menuOpen} aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'} onClick={() => setMenuOpen((v) => !v)}>
+            {menuOpen ? <X size={20} strokeWidth={1.75} /> : <Menu size={20} strokeWidth={1.75} />}
           </button>
 
           {user ? (
-            <div ref={profileRef} className={`navbar-profile ${profileOpen ? 'is-open' : ''}`}>
-              <button
-                type="button"
-                className="navbar-profile-trigger"
-                aria-expanded={profileOpen}
-                aria-haspopup="menu"
-                onClick={() => setProfileOpen((v) => !v)}
-              >
-                {user?.profilePhoto ? (
-                  <img src={user.profilePhoto} alt="" className="navbar-profile-avatar" />
-                ) : (
-                  <span className="navbar-profile-fallback">
-                    {(user?.name || user?.username || "N").charAt(0).toUpperCase()}
-                  </span>
-                )}
-                <span className="sr-only">Menu da conta</span>
-              </button>
-
-              {profileOpen ? (
-                <div className="navbar-profile-menu" role="menu">
-                  <div className="navbar-profile-header">
-                    {user?.profilePhoto ? (
-                      <img src={user.profilePhoto} alt="" className="navbar-profile-avatar-large" />
+            <>
+              <IconButton
+                to="/dashboard/messages"
+                label="Mensagens"
+                active={isActive('/dashboard/messages') || isActive('/mensagens')}
+                badge={user.unreadMessages}
+                icon={<MessageCircle size={20} strokeWidth={1.75} />}
+              />
+              <IconButton
+                to="/notificacoes"
+                label="Notificações"
+                active={isActive('/notificacoes')}
+                badge={user.unreadNotifications}
+                icon={<Bell size={20} strokeWidth={1.75} />}
+              />
+              <div ref={profileRef} className={`navbar-profile ${profileOpen ? 'is-open' : ''}`}>
+                <button
+                  type="button"
+                  className="navbar-profile-trigger"
+                  title="Minha conta"
+                  aria-label="Minha conta"
+                  aria-expanded={profileOpen}
+                  aria-haspopup="menu"
+                  onClick={() => setProfileOpen((v) => !v)}
+                >
+                  <UserAvatar
+                    src={user?.profilePhoto}
+                    name={user?.businessName || user?.name || user?.username}
+                    size={40}
+                  />
+                </button>
+                {profileOpen ? (
+                  <div className="navbar-profile-menu" role="menu">
+                    <div className="navbar-profile-header">
+                      <h3>{user?.businessName || user?.username || user?.name}</h3>
+                      <p>@{user?.username}</p>
+                    </div>
+                    <Link to={user.username ? `/u/${user.username}` : '/dashboard'} onClick={() => setProfileOpen(false)}>Meu perfil</Link>
+                    <Link to="/dashboard" onClick={() => setProfileOpen(false)}>{isFreelancer ? 'Painel' : 'Minha conta'}</Link>
+                    {isFreelancer ? (
+                      <>
+                        <Link to="/dashboard/services" onClick={() => setProfileOpen(false)}>Meus serviços</Link>
+                        <Link to="/dashboard/jobs" onClick={() => setProfileOpen(false)}>Trabalhos</Link>
+                      </>
                     ) : (
-                      <span className="navbar-profile-fallback navbar-profile-avatar-large">
-                        {(user?.name || user?.username || "N").charAt(0).toUpperCase()}
-                      </span>
+                      <>
+                        <Link to="/dashboard/jobs" onClick={() => setProfileOpen(false)}>Minhas contratações</Link>
+                        <Link to="/salvos" onClick={() => setProfileOpen(false)}>Salvos</Link>
+                      </>
                     )}
-                    <h3>{user?.username || user?.name || 'Usuário'}</h3>
-                    <p>{user?.email || ''}</p>
+                    <Link to="/dashboard/settings" onClick={() => setProfileOpen(false)}>Configurações</Link>
+                    <div className="navbar-profile-divider" />
+                    <button type="button" className="navbar-profile-logout" onClick={handleLogout}>Sair</button>
                   </div>
-
-                  <button
-                    type="button"
-                    className="navbar-profile-upgrade"
-                    onClick={() => {
-                      setProfileOpen(false);
-                      navigate('/perfil');
-                    }}
-                  >
-                    Meu Perfil
-                  </button>
-                  <Link to="/home" onClick={() => setProfileOpen(false)}>Projetos</Link>
-                  {user?.type === 'normal' && (
-                    <Link to="/salvos" onClick={() => setProfileOpen(false)}>Salvos</Link>
-                  )}
-                  <button type="button" className="navbar-profile-logout" onClick={handleLogout}>
-                    Sair
-                  </button>
-                </div>
-              ) : null}
-            </div>
+                ) : null}
+              </div>
+            </>
           ) : (
-            <Link to="/authchoice" className="navbar-nav-link navbar-nav-link-active">
-              Entrar
-            </Link>
+            <Link to="/authchoice" className="home-btn">Entrar</Link>
           )}
         </div>
       </div>
 
       {menuOpen && (
         <div className="navbar-mobile-panel">
-          <Link to="/perfil" onClick={() => setMenuOpen(false)}>Perfil</Link>
-          <Link to="/home" onClick={() => setMenuOpen(false)}>Projetos</Link>
-          <Link to="/home?view=freelancers" onClick={() => setMenuOpen(false)}>Freelancers</Link>
-          {user?.type === 'normal' && (
-            <Link to="/salvos" onClick={() => setMenuOpen(false)}>Salvos</Link>
-          )}
+          <Link to="/home" onClick={() => setMenuOpen(false)}>Início</Link>
+          <Link to="/servicos" onClick={() => setMenuOpen(false)}>Serviços</Link>
+          <Link to="/freelancers" onClick={() => setMenuOpen(false)}>Freelancers</Link>
+          <Link to="/social" onClick={() => setMenuOpen(false)}>Social</Link>
+          {user ? <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Painel</Link> : null}
         </div>
       )}
     </nav>

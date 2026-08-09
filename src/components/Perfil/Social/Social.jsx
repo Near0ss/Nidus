@@ -75,8 +75,8 @@ export default function Social({ user, updateUser }) {
     <section className="perfil-section perfil-social">
       <div className="section-heading">
         <div>
-          <h2>Redes sociais</h2>
-          <p>Coloque só o que você usa. Nada de números fake — o Nidus mostra o que for real.</p>
+          <h2>Redes externas</h2>
+          <p>Links do Instagram, LinkedIn e site. A rede interna do Nidus fica em Social.</p>
         </div>
       </div>
 

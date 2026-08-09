@@ -1,9 +1,7 @@
 export async function apiFetch(path, options = {}) {
   const headers = { ...(options.headers || {}) };
-  const token = localStorage.getItem('nidus_token');
-
-  if (token && !headers.Authorization) {
-    headers.Authorization = `Bearer ${token}`;
+  if (options.body && !(options.body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
   }
 
   let response;
@@ -27,4 +25,10 @@ export async function apiFetch(path, options = {}) {
   }
 
   return data;
+}
+
+export async function uploadFiles(files) {
+  const form = new FormData();
+  [...files].forEach((file) => form.append('files', file));
+  return apiFetch('/api/uploads', { method: 'POST', body: form });
 }

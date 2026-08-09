@@ -1,140 +1,67 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Bookmark, MapPin } from "lucide-react";
-import Footer2 from "../components/Footer2";
-import { apiFetch } from "../lib/api";
-import { useAuth } from "../context/AuthContext";
-import logo from "../assets/logo.png";
-import "../css/Home.css";
-import "../css/Saved.css";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Footer2 from '../components/Footer2';
+import FreelancerCard from '../components/FreelancerCard';
+import ServiceCard from '../components/ServiceCard';
+import PostCard from '../components/PostCard';
+import LoadingState from '../components/ui/LoadingState';
+import EmptyState from '../components/ui/EmptyState';
+import { apiFetch } from '../lib/api';
+import '../css/Home.css';
+import '../css/nidus.css';
 
 export default function Saved() {
-  const { user, updateUser } = useAuth();
-  const [people, setPeople] = useState([]);
-  const [error, setError] = useState(null);
+  const [data, setData] = useState({ freelancers: [], services: [], posts: [] });
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState('freelancers');
 
   useEffect(() => {
-    if (user?.type !== "normal") {
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    apiFetch("/api/saved")
-      .then((data) => setPeople(data.users || []))
-      .catch((err) => setError(err.message))
+    apiFetch('/api/saved')
+      .then((payload) => setData({
+        freelancers: payload.freelancers || payload.users || [],
+        services: payload.services || [],
+        posts: payload.posts || [],
+      }))
       .finally(() => setLoading(false));
-  }, [user]);
-
-  async function unsave(id) {
-    try {
-      await apiFetch(`/api/saved/${id}`, { method: "POST" });
-      setPeople((prev) => prev.filter((item) => item.id !== id));
-      updateUser?.({
-        savedIds: (user?.savedIds || []).filter((savedId) => savedId !== id),
-      });
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  const isContractor = user?.type === "normal";
+  }, []);
 
   return (
-    <div className="home-page saved-page">
-
-      <main id="conteudo-principal" className="saved-main">
+    <div className="home-page">
+      <main id="conteudo-principal" className="nidus-page">
         <section className="home-hero">
-          <img src={logo} alt="" className="home-hero__orb" />
           <div className="home-hero__copy">
-            <span className="u-eyebrow">Favoritos</span>
-            <h1>Salvos</h1>
-            <p>
-              {!isContractor
-                ? "Salvar profissionais faz parte da jornada de quem contrata."
-                : people.length
-                  ? `${people.length} ninho${people.length === 1 ? "" : "s"} guardado${people.length === 1 ? "" : "s"} para contratar depois.`
-                  : "Guarde os profissionais que você quer contratar depois."}
-            </p>
-            <div className="home-hero__actions">
-              <Link to="/home?view=freelancers" className="home-btn">
-                explorar ninhos
-              </Link>
-              <Link to="/home" className="home-btn ghost">
-                ver feed
-              </Link>
-            </div>
+            <span className="u-eyebrow">Salvos</span>
+            <h1>Guardados</h1>
+            <p>Freelancers, serviços e publicações em listas separadas.</p>
           </div>
         </section>
 
-        {!isContractor ? (
-          <section className="home-empty">
-            <img src={logo} alt="" className="home-empty__orb" />
-            <h2>Disponível para contratantes</h2>
-            <p>Entre com uma conta de usuário para salvar freelancers.</p>
-            <div className="home-hero__actions">
-              <Link to="/home" className="home-btn">
-                Explorar o feed
-              </Link>
-            </div>
-          </section>
-        ) : error ? (
-          <section className="home-empty">
-            <h2>Não deu para carregar</h2>
-            <p>{error}</p>
-          </section>
-        ) : loading ? (
-          <section className="home-empty">
-            <h2>Carregando o ninho…</h2>
-            <p>Buscando os profissionais que você salvou.</p>
-          </section>
-        ) : people.length === 0 ? (
-          <section className="home-empty">
-            <img src={logo} alt="" className="home-empty__orb" />
-            <h2>Ainda sem favoritos</h2>
-            <p>Explore o feed e salve profissionais para contratar depois.</p>
-            <div className="home-hero__actions">
-              <Link to="/home?view=freelancers" className="home-btn">
-                Explorar freelancers
-              </Link>
-            </div>
-          </section>
-        ) : (
-          <div className="saved-grid">
-            {people.map((author) => (
-              <article key={author.id} className="freelancer-card saved-card">
-                <Link to={`/u/${author.username}`} className="saved-card__main">
-                  <div className="freelancer-avatar">
-                    {author.profilePhoto ? (
-                      <img src={author.profilePhoto} alt="" />
-                    ) : (
-                      <span>
-                        {(author.businessName || author.username || "N").charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div className="freelancer-body">
-                    <strong>{author.businessName || author.username}</strong>
-                    <span>
-                      {(author.professionalTitle || []).slice(0, 2).join(" • ") || "Freelancer"}
-                    </span>
-                    <p>
-                      <MapPin size={13} />
-                      {author.country || "Brasil"}
-                    </p>
-                  </div>
-                </Link>
-                <button type="button" className="saved-unsave" onClick={() => unsave(author.id)}>
-                  <Bookmark size={15} />
-                  Remover
-                </button>
-              </article>
-            ))}
-          </div>
-        )}
-      </main>
+        <div className="chip-row">
+          <button type="button" className={`chip${tab === 'freelancers' ? ' is-on' : ''}`} onClick={() => setTab('freelancers')}>Freelancers</button>
+          <button type="button" className={`chip${tab === 'services' ? ' is-on' : ''}`} onClick={() => setTab('services')}>Serviços</button>
+          <button type="button" className={`chip${tab === 'posts' ? ' is-on' : ''}`} onClick={() => setTab('posts')}>Publicações</button>
+        </div>
 
+        {loading ? <LoadingState /> : null}
+
+        {tab === 'freelancers' && !loading ? (
+          data.freelancers.length
+            ? <div className="nidus-grid freelancer-grid">{data.freelancers.map((item) => <FreelancerCard key={item.id} freelancer={item} />)}</div>
+            : <EmptyState title="Você ainda não salvou freelancers." actions={<Link to="/freelancers" className="home-btn">Explorar</Link>} />
+        ) : null}
+
+        {tab === 'services' && !loading ? (
+          data.services.length
+            ? <div className="nidus-grid">{data.services.map((item) => <ServiceCard key={item.id} service={item} />)}</div>
+            : <EmptyState title="Você ainda não salvou serviços." actions={<Link to="/servicos" className="home-btn">Ver serviços</Link>} />
+        ) : null}
+
+        {tab === 'posts' && !loading ? (
+          data.posts.length
+            ? data.posts.map((post) => <PostCard key={post.id} post={post} />)
+            : <EmptyState title="Você ainda não salvou publicações." actions={<Link to="/social" className="home-btn">Abrir Social</Link>} />
+        ) : null}
+      </main>
       <Footer2 />
     </div>
   );
