@@ -35,7 +35,6 @@ npm run dev
 | Freelancer (seed) | marina@nidus.dev | nidus123 |
 | Cliente (seed) | bruno@nidus.dev | nidus123 |
 
-Contas migradas do JSON antigo: `Near`, `aaaaaaaa` (senha `20645566Yy*`) e Google `buchholz`.
 
 ## Variáveis
 
