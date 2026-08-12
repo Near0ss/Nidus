@@ -1734,40 +1734,7 @@ button.summary-tags:hover {
   isolation: isolate;
 }
 
-.project-preview-profession:hover{
-  transform:
-    translateX(6px)
-    scale(1.02);
 
-  border-color:#ff6b6b;
-
-  box-shadow:
-    0 18px 40px rgba(255,107,107,.18);
-}
-
-.project-preview-profession::before{
-  content:"";
-
-  position:absolute;
-
-  left:0;
-  top:0;
-
-  width:5px;
-  height:100%;
-
-  background:
-    linear-gradient(
-      180deg,
-      #ff6b6b,
-      #ff9b9b,
-      #7fe4ff
-    );
-
-  transition:.35s;
-
-  z-index:2;
-}
 
 .project-preview-profession:hover::before{
   width:8px;

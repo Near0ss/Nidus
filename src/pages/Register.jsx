@@ -6,9 +6,9 @@ import "../css/Register.css";
 import Login from "../components/Login";
 
 import { ArrowLeft, Check } from "lucide-react";
-import Background from "../assets/LoginNidus.webp";
-import PreviewBg from "../assets/loginNidus4.webp";
-import FinalPreview from "../assets/Login.webp";
+import Background from "../assets/FundoStep1.png";
+import PreviewBg from "../assets/Step3.png";
+import FinalPreview from "../assets/LoginNidus.png";
 
 import UserStep from "../components/RegisterSteps/1UserStep";
 import ProfileStep from "../components/RegisterSteps/2ProfileStep";
