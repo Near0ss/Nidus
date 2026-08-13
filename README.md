@@ -5,23 +5,13 @@ Plataforma para freelancers divulgarem serviços, conversarem com clientes, acom
 ## Rodar em desenvolvimento
 
 ```bash
-cd backend
-cp .env.example .env
 npm install
-npx prisma migrate dev
-npm run db:seed
-npm run dev
-
-# em outro terminal, na raiz
-npm install
-npm run dev:front
-```
-
-Ou, na raiz, depois do seed:
-
-```bash
 npm run dev
 ```
+
+O `npm install` executado na raiz instala frontend e backend, cria a configuração
+local do backend e prepara o banco de desenvolvimento. Nas próximas vezes, basta
+usar `npm run dev` para iniciar os dois serviços.
 
 - Front: http://127.0.0.1:5173/
 - API: http://localhost:5000/

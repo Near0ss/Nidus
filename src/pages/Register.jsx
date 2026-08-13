@@ -61,16 +61,19 @@ function Register() {
     setSuccess(null);
 
     try {
+      const payload = {
+        ...formData,
+        projects: undefined,
+        email: String(formData.email || "").trim().toLowerCase(),
+        username: normalizeUsername(formData.username),
+      };
+
       const data = await apiFetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          email: String(formData.email || "").trim().toLowerCase(),
-          username: normalizeUsername(formData.username),
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (data.user) {
@@ -276,10 +279,10 @@ function Register() {
                     />
 
                     <div className="project-preview">
-                      <div className="project-preview-row top">
+                      <div className="project-preview-single">
                         <div className="project-preview-titles">
                           {formData.professionalTitle
-                            .slice(0, 3)
+                            .slice(0, 5)
                             .map((title) => (
                               <div
                                 key={title}
@@ -290,57 +293,17 @@ function Register() {
                             ))}
                         </div>
 
-                        <div className="project-preview-images">
-                          {Array.from({ length: 3 }).map((_, index) => {
-                            const image = formData.projects?.[index];
-
-                            return (
-                              <div
-                                key={index}
-                                className="project-preview-image"
-                              >
-                                {image ? (
-                                  <img src={image.preview} alt="" />
-                                ) : (
-                                  <div className="project-preview-placeholder" />
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      <div className="project-preview-row bottom">
-                        <div className="project-preview-images">
-                          {Array.from({ length: 3 }).map((_, index) => {
-                            const image = formData.projects?.[index + 3];
-
-                            return (
-                              <div
-                                key={index}
-                                className="project-preview-image"
-                              >
-                                {image ? (
-                                  <img src={image.preview} alt="" />
-                                ) : (
-                                  <div className="project-preview-placeholder" />
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <div className="project-preview-titles">
-                          {formData.professionalTitle
-                            .slice(3, 5)
-                            .map((title) => (
-                              <div
-                                key={title}
-                                className="project-preview-profession"
-                              >
-                                {title}
-                              </div>
-                            ))}
+                        <div className="project-preview-images single">
+                          <div className="project-preview-image">
+                            {formData.projects?.[0] ? (
+                              <img
+                                src={formData.projects[0].preview}
+                                alt="Projeto selecionado"
+                              />
+                            ) : (
+                              <div className="project-preview-placeholder" />
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

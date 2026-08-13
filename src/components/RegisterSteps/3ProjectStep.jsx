@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { Upload, DollarSign, Clock3, ChevronDown } from "lucide-react";
 
+const MAX_PROJECT_IMAGES = 1;
+
 function centsFromStored(value) {
   if (!value) return 0;
   const amount = Number(String(value).replace(",", "."));
@@ -37,7 +39,7 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const images = data.projects || [];
+  const images = (data.projects || []).slice(0, MAX_PROJECT_IMAGES);
 
   const initialPrice = data.initialPrice || "";
 
@@ -46,7 +48,7 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
   function addFiles(files) {
     const valid = Array.from(files)
       .filter((file) => file.type.startsWith("image/"))
-      .slice(0, 6 - images.length);
+      .slice(0, MAX_PROJECT_IMAGES);
 
     if (!valid.length) return;
 
@@ -66,7 +68,7 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
           }),
       ),
     ).then((result) => {
-      updateField("projects", [...images, ...result]);
+      updateField("projects", result);
     });
   }
 
@@ -78,7 +80,7 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
     addFiles(e.dataTransfer.files);
   }
 
-  const imagesValid = images.length >= 2;
+  const imagesValid = images.length === MAX_PROJECT_IMAGES;
 
   const priceCents = centsFromStored(initialPrice);
   const priceValid = priceCents > 0;
@@ -105,28 +107,27 @@ function ProjectStep({ data, updateField, nextStep, prevStep }) {
       >
         <Upload size={38} />
 
-        <h3>Arraste imagens aqui</h3>
+        <h3>Arraste uma imagem aqui</h3>
 
-        <small>mínimo 2 • máximo 6 imagens</small>
+        <small>adicione 1 imagem do projeto</small>
 
         <input
           ref={inputRef}
           hidden
           type="file"
-          multiple
           accept="image/*"
           onChange={(e) => addFiles(e.target.files)}
         />
       </div>
 
       <div className="project-progress">
-        <span>{images.length}/6 imagens adicionadas</span>
+        <span>{images.length}/1 imagem adicionada</span>
 
         <div className="project-progress-bar">
           <div
             className="project-progress-fill"
             style={{
-              width: `${(images.length / 6) * 100}%`,
+              width: `${images.length * 100}%`,
             }}
           />
         </div>

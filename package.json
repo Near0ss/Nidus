@@ -3,7 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "backend"
+  ],
   "scripts": {
+    "postinstall": "node scripts/setup.mjs",
     "dev": "concurrently -n front,back -c cyan,magenta \"npm run dev:front\" \"npm run dev:back\"",
     "dev:front": "vite",
     "dev:back": "npm run dev --prefix backend",
