@@ -75,28 +75,45 @@
   margin-top: 0.55rem;
 }
 
+
 .home-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
+
   min-height: 2.5rem;
   padding: 0.5rem 1.1rem;
+
   border-radius: 999px;
   border: 1px solid var(--color-ink, #171313);
+
   background: var(--color-ink, #171313);
   color: #fff;
+
   font-size: 0.92rem;
   font-weight: 700;
+
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .home-btn:hover {
   background: var(--color-accent, #ff6b6b);
   border-color: var(--color-accent, #ff6b6b);
   color: #fff;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px rgba(255, 107, 107, 0.25);
 }
 
 .home-btn.ghost,
@@ -108,9 +125,14 @@
 
 .home-btn.ghost:hover,
 .home-btn.outline:hover {
-  background: #faf7f5;
-  border-color: var(--color-border-strong, #d6cac6);
-  color: var(--color-ink, #171313);
+  background: #fff;
+  border-color: var(--color-accent, #ff6b6b);
+  color: var(--color-accent, #ff6b6b);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 18px rgba(23, 19, 19, 0.08);
 }
 
 .home-btn.text {

@@ -29,10 +29,12 @@
 .footer2-left a {
   text-decoration: none;
   color: var(--color-ink, #171313);
+  transition: 0.2s ease;
 }
 
 .footer2-left a:hover {
-  color: var(--color-accent-deep, #d94a4a);
+  color: var(--color-accent, #ff6b6b);
+  transform: translateY(-2px);
 }
 
 .footer2-right {

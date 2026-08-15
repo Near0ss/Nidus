@@ -111,7 +111,9 @@ export default function Home() {
             <section className="nidus-section">
               <div className="section-heading">
                 <h2>Serviços em destaque</h2>
-                <Link to="/servicos">Ver todos</Link>
+                <Link to="/servicos" className="home-view-all">
+                  Ver todos
+                </Link>
               </div>
               <div className="nidus-grid">
                 {(data.featuredServices || []).map((service) => <ServiceCard key={service.id} service={service} />)}
@@ -121,7 +123,9 @@ export default function Home() {
             <section className="nidus-section">
               <div className="section-heading">
                 <h2>Freelancers recomendados</h2>
-                <Link to="/freelancers">Ver todos</Link>
+                <Link to="/servicos" className="home-view-all">
+                  Ver todos
+                </Link>
               </div>
               <div className="nidus-grid freelancer-grid">
                 {(data.freelancers || []).map((item) => <FreelancerCard key={item.id} freelancer={item} />)}
@@ -149,7 +153,9 @@ export default function Home() {
             <section className="nidus-section">
               <div className="section-heading">
                 <h2>Conteúdo da comunidade</h2>
-                <Link to="/social">Abrir Social</Link>
+                <Link to="/social" className="home-view-all">
+                  Abrir Social
+                </Link>
               </div>
               {(data.posts || []).map((post) => <PostCard key={post.id} post={post} />)}
               {!user ? <p className="muted">Entre para curtir, comentar e salvar publicações.</p> : null}

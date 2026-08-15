@@ -9,6 +9,22 @@
 .nidus-section { display: grid; gap: 0.85rem; }
 .nidus-section h2 { margin: 0; }
 
+.home-view-all {
+  color: var(--color-ink, #171313);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.home-view-all:hover {
+  color: #747474;
+  transform: translateX(4px);
+}
+
 .nidus-card {
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--color-border);
@@ -16,6 +32,18 @@
   box-shadow: var(--shadow-sm);
   padding: 1rem;
   min-width: 0;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nidus-card:hover {
+  border-color: rgba(255, 82, 82, 0.55);
+
+  box-shadow:
+    0 8px 24px rgba(23, 19, 19, 0.08),
+    0 0 0 3px rgba(255, 107, 107, 0.08);
 }
 
 .nidus-grid {
@@ -135,16 +163,66 @@
   margin-top: 0.35rem;
 }
 
-.chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .chip {
   border: 1px solid var(--color-border);
   background: #fff;
+  color: var(--color-ink, #171313);
+
   border-radius: var(--radius-pill);
   padding: 0.4rem 0.85rem;
+
   font-size: var(--text-sm);
+  font-weight: 600;
+
   cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
 }
-.chip.is-on, a.chip:hover { background: var(--color-accent-wash); border-color: var(--color-accent-soft); }
+
+.chip:hover,
+a.chip:hover {
+  background: var(--color-accent-wash);
+  border-color: var(--color-accent-soft);
+  color: var(--color-accent, #ff6b6b);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 14px rgba(255, 107, 107, 0.12);
+}
+
+.chip.is-on {
+  background: var(--color-accent, #ff6b6b);
+  border-color: var(--color-accent, #ff6b6b);
+  color: #fff;
+
+  box-shadow:
+    0 6px 16px rgba(255, 107, 107, 0.22);
+
+  transform: translateY(-1px);
+}
+
+.chip.is-on:hover {
+  background: #ff7a7a;
+  border-color: #ff7a7a;
+  color: #fff;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 18px rgba(255, 107, 107, 0.25);
+}
 
 .nidus-filters {
   display: grid;
