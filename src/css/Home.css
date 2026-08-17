@@ -83,12 +83,12 @@
   gap: 0.4rem;
 
   min-height: 2.5rem;
-  padding: 0.5rem 1.1rem;
+  padding: 0.5rem 1.15rem;
 
   border-radius: 999px;
-  border: 1px solid var(--color-ink, #171313);
+  border: 1px solid #171313;
 
-  background: var(--color-ink, #171313);
+  background: linear-gradient(135deg, #171313, #292222);
   color: #fff;
 
   font-size: 0.92rem;
@@ -97,23 +97,28 @@
   text-decoration: none;
   cursor: pointer;
 
+  box-shadow:
+    0 4px 10px rgba(23, 19, 19, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
   transition:
     background 0.25s ease,
-    color 0.25s ease,
     border-color 0.25s ease,
+    color 0.25s ease,
     transform 0.25s ease,
     box-shadow 0.25s ease;
 }
 
 .home-btn:hover {
-  background: var(--color-accent, #ff6b6b);
-  border-color: var(--color-accent, #ff6b6b);
+  background: linear-gradient(135deg, #ff6262, #ff7b70);
+  border-color: #ff6b6b;
   color: #fff;
 
   transform: translateY(-2px);
 
   box-shadow:
-    0 8px 20px rgba(255, 107, 107, 0.25);
+    0 8px 20px rgba(255, 107, 107, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .home-btn.ghost,

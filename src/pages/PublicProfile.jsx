@@ -191,7 +191,7 @@ export default function PublicProfile() {
             </section>
 
             <section className="perfil-section">
-              <div className="section-heading"><h2>Publicações</h2><Link to="/social">Abrir Social</Link></div>
+              <div className="section-heading"><h2>Publicações</h2><Link to="/social" className="home-view-all">Abrir Social</Link></div>
               {profile.posts?.length ? profile.posts.map((post) => <PostCard key={post.id} post={post} />) : <EmptyState title="Sem publicações." />}
             </section>
           </main>

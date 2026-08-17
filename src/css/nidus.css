@@ -143,9 +143,15 @@
   max-width: 36rem;
 }
 .nidus-empty.is-center {
+  display: grid;
+  place-items: center;
+  align-content: center;
   justify-items: center;
   text-align: center;
+  width: 100%;
+  height: 100%;
   max-width: none;
+  box-sizing: border-box;
 }
 .nidus-empty__icon {
   width: 2.125rem;
@@ -324,17 +330,35 @@ a.chip:hover {
 .service-card-new__body { padding: 0.9rem; display: grid; gap: 0.45rem; }
 .service-card-new__top { display: flex; justify-content: space-between; gap: 0.5rem; }
 .service-card-new__top h3 { margin: 0; font-size: 1.05rem; }
-.service-card-new__author { display: flex; align-items: center; gap: 0.5rem; color: var(--color-ink-soft); }
+.service-card-new__author { display: flex; align-items: center; gap: 0.5rem; color: var(--color-ink-soft);transition: color 0.2s ease; }
 .service-card-new__meta, .service-card-new__footer, .freelancer-card-new__meta {
   display: flex; flex-wrap: wrap; gap: 0.45rem 0.8rem; color: var(--color-muted); font-size: var(--text-sm);
 }
-.icon-btn { border: 0; background: transparent; color: var(--color-ink-soft); cursor: pointer; }
+
+.service-card-new__author:hover {
+  color: var(--color-accent, #ff6b6b);
+}
+
+.service-card-new__author:hover span {
+  color: var(--color-accent, #ff6b6b);
+}
+.icon-btn { border: 0; background: transparent; color: var(--color-ink-soft); cursor: pointer;transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease; }
 .icon-btn.is-on, .post-card-new__actions .is-on { color: var(--color-accent-deep); }
 
-.freelancer-card-new { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
+.service-card-new .icon-btn:hover {
+  color: #ff6b6b;
+  background: #fff4f4;
+  border-color: #ffb0b0;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.12);
+}
+
+.freelancer-card-new { display: flex; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
 .freelancer-card-new__body { display: grid; gap: 0.3rem; min-width: 0; }
-.skill-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; list-style: none; }
-.skill-chips li { background: var(--color-accent-wash); border-radius: var(--radius-pill); padding: 0.15rem 0.55rem; font-size: 0.75rem; }
+.skill-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; padding: 0; margin: 0.35rem 0; }
+.skill-chips li { background: linear-gradient(135deg, var(--color-accent-wash), #fff); border: 1px solid var(--color-accent-soft); border-radius: var(--radius-pill); padding: 0.2rem 0.6rem; font-size: 0.75rem; color: var(--color-accent-deep); font-weight: 600; }
 .muted { color: var(--color-muted); }
 
 .post-card-new { display: grid; gap: 0.7rem; }
