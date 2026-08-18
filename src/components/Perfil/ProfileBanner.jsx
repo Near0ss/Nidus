@@ -171,6 +171,7 @@ export default function ProfileBanner({
               </div>
 
               <button
+              className="banner-modal-close"
                 onClick={() =>
                   setShowModal(false)
                 }
